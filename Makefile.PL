@@ -15,7 +15,7 @@ sub MY::postamble {
 DIST_DEFAULT += manifest
 
 README: readme.texi
-	-rm \$@
+	-rm -rf \$@
 	makeinfo \$< --output \$@ --no-headers --no-validate
 
 tag:
@@ -29,7 +29,7 @@ maintainer-dist: dist tag
 	mv \$(DISTVNAME).tar.gz \$(HOME)/backpack
 
 maintainer-clean: distclean
-	-rm README vtrace
+	-rm -rf README vtrace
 
 maintainer-copy: README
 
