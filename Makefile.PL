@@ -19,10 +19,10 @@ README: readme.texi
 	makeinfo \$< --output \$@ --no-headers --no-validate
 
 tag:
-	cvs tag -F \$(DISTNAME)_\$(VERSION_SYM) .
+	svnorcvs tag  \$(DISTNAME)_\$(VERSION_SYM)
 
 maintainer-diff:
-	c4 diff ...@\$(DISTNAME)_\$(VERSION_SYM) 
+	svnorcvs diff \$(DISTNAME)_\$(VERSION_SYM) 
 
 maintainer-dist: dist tag
 	cp \$(DISTVNAME).tar.gz \$(HOME)/src/kits
