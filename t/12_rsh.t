@@ -2,13 +2,15 @@
 # $Revision: #3 $$Date: 2004/06/21 $$Author: ws150726 $
 # DESCRIPTION: Perl ExtUtils: Type 'make test' to test this package
 #
-# Copyright 2003 by Wilson Snyder.  This program is free software;
+# Copyright 2003-2005 by Wilson Snyder.  This program is free software;
 # you can redistribute it and/or modify it under the terms of either the GNU
 # General Public License or the Perl Artistic License.
 ######################################################################
 
 use Test;
 use strict;
+
+our $Other_Host = "ws102";
 
 BEGIN { plan tests => 3 }
 BEGIN { require "t/test_utils.pl"; }
@@ -35,7 +37,7 @@ sub a_test {
 	$fork->schedule(
 			run_on_start => sub {
 			    print "Start\n";
-			    exec "rsh bimini sleep 10;";
+			    exec "ssh $Other_Host sleep 10;";
 			    exit(0);
 			},
 			run_on_finish => sub {

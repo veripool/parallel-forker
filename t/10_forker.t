@@ -2,7 +2,7 @@
 # $Revision: #6 $$Date: 2004/06/21 $$Author: ws150726 $
 # DESCRIPTION: Perl ExtUtils: Type 'make test' to test this package
 #
-# Copyright 2003 by Wilson Snyder.  This program is free software;
+# Copyright 2003-2005 by Wilson Snyder.  This program is free software;
 # you can redistribute it and/or modify it under the terms of either the GNU
 # General Public License or the Perl Artistic License.
 ######################################################################
