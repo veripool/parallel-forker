@@ -1,5 +1,5 @@
 # Fork.pm -- Parallel management
-# $Revision: #19 $$Date: 2004/08/25 $$Author: ws150726 $
+# $Revision: #19 $$Date$$Author$
 ######################################################################
 #
 # This program is Copyright 2002-2005 by Wilson Snyder.
@@ -401,16 +401,16 @@ use strict;
 use POSIX qw(sys_wait_h :signal_h);
 use Carp;
 
-use vars qw($Id $Debug);
+use vars qw($HashId $Debug);
 
 $Debug = $Parallel::Forker::Debug;
-$Id = 0;
+$HashId = 0;
 
 sub _new {
     my $class = shift;
     my $self = {
 	_forkref => undef,	# Upper Fork object
-	name => $Id++,		# ID for hashing.  User may override it
+	name => $HashId++,	# ID for hashing.  User may override it
 	label => undef,		# Label for run_after's
 	_after_children => {},	# IDs that are waiting on this event
 	_after_parents => {},	# IDs that we need to wait for

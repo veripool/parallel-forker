@@ -1,4 +1,4 @@
-# $Revision: #5 $$Date: 2004/08/26 $$Author: ws150726 $
+# $Revision: #5 $$Date$$Author$
 # DESCRIPTION: Perl ExtUtils: Type 'perl Makefile.PL' to create a Makefile for this package
 #
 # Copyright 2003-2005 by Wilson Snyder.  This program is free software;
