@@ -37,7 +37,7 @@ sub a_test {
 	$fork->schedule(
 			run_on_start => sub {
 			    print "Start\n";
-			    exec "ssh $Other_Host sleep 10;";
+			    exec "ssh $Other_Host sleep 2;";
 			    exit(0);
 			},
 			run_on_finish => sub {
