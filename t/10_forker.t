@@ -73,7 +73,7 @@ sub run_a_test {
     $p2->run_after($p1) if $params{wait_it};
     $p2->ready() if $params{wait_it};
     ok(1);
-    
+
     my $p3 = $fork->schedule(run_on_start => sub { usleep(100*1000); },
 			     run_on_finish => sub {
 				 my ($procref, $status) = @_;
@@ -87,7 +87,7 @@ sub run_a_test {
     }
     $p3->ready() if $params{wait_it};
     ok(1);
-    
+
     $fork->wait_all();   # Wait for all children to finish
     ok(1);
 
@@ -105,4 +105,3 @@ sub run_a_test {
     $fork->write_tree(filename=>"test_dir/10_write_tree_$WTN.log");
 }
 
-    
