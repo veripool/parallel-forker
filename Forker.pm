@@ -649,7 +649,7 @@ sub poll {
     if ($got>0) {
 	$self->{status} = $?;	# convert wait return to status 
 	# Transition: running -> 'done'
-	print "  FrkProc $self->{name} $self->{_state} -> done ($?)\n" if $Debug;
+	print "  FrkProc $self->{name} $self->{_state} -> done ($self->{status})\n" if $Debug;
 	delete $self->{_forkref}{_running}{$self->{pid}};
 	$self->{pid} = undef;
 	$self->{_state} = 'done';
