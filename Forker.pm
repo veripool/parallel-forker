@@ -754,34 +754,34 @@ Manage a single process under the control of Parallel::Forker.
 
 =over 4
 
-=head2 kill
+=item kill
 
 Kill the process if it is running
 
-=head2 kill_tree
+=item kill_tree
 
 Kill the process and any of it's subchildren.  Requires Schedule::Load.
 
-=head2 forkref
+=item forkref
 
 Return the parent Parallel::Forker object this process belongs to.
 
-=head2 pid
+=item pid
 
 Return the process ID if this job is running, else undef.
 
-=head2 poll
+=item poll
 
 Check the process for activity, invoking callbacks if needed.
 Generally Fork->poll() is used instead.
 
-=head2 ready
+=item ready
 
 Mark this process as being ready for execution when all run_after's are
 ready and CPU resources permit.  When that occurs, run will be called on
 the process automatically.
 
-=head2 run 
+=item run 
 
 Start this process now.
 
