@@ -1,5 +1,5 @@
 # Fork.pm -- Parallel management
-# $Revision: #19 $$Date$$Author$
+# $Id:$
 ######################################################################
 #
 # This program is Copyright 2002-2005 by Wilson Snyder.
