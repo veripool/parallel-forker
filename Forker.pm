@@ -1,5 +1,5 @@
 # Fork.pm -- Parallel management
-# $Id:$
+# $Id$
 ######################################################################
 #
 # This program is Copyright 2002-2005 by Wilson Snyder.
@@ -39,7 +39,7 @@ sub new {
 	_running => {},		# Process objects running now, keyed *PID*
 	_in_child => 0,		# In a child process, don't allow forking
 	_run_after_eqn => undef,# Equation to eval to determine if ready to launch
-#	max_proc => -1,		# Number processes to launch, -1=any, 0=no fork, +=that number
+	max_proc => undef,	# Number processes to launch, <1=any, +=that number
 	@_
     };
     bless $self, ref($class)||$class;
@@ -47,6 +47,12 @@ sub new {
 }
 
 #### ACCESSORS
+
+sub max_proc {
+    my $self = shift;
+    $self->{max_proc} = shift if $#_>=0;
+    return $self->{max_proc};
+}
 
 sub running {
     my $self = shift;
@@ -116,14 +122,18 @@ sub poll {
     my $self = shift;
     while ($self->{_activity}) {
 	$self->{_activity} = 0;
+	my $nrunning = 0;
 	foreach my $procref (values %{$self->{_running}}) {
 	    if (my $doneref = $procref->poll()) {
 		$self->{_activity} = 1;
 		return $doneref;
 	    }
+	    $nrunning++;
 	}
 	foreach my $procref (values %{$self->{_runable}}) {
+	    last if ($self->{max_proc} && $nrunning >= $self->{max_proc});
 	    $procref->run;
+	    $nrunning++;
 	}
     }
 }
@@ -305,6 +315,11 @@ Function names based loosely on Parallel::ForkManager.
 
 =over 4
 
+=item $self->max_proc
+
+Specify the maximum number of processes to run at any one time.  Defaults
+to undef, which runs all jobs at once.
+
 =item $self->new (<parameters>)
 
 Create a new manager object.  There may be more then one manager in any
@@ -340,11 +355,13 @@ When not specified, a unique number will be assigned automatically.
 
 =item run_on_start
 
-Subroutine reference to execute when the job begins.
+Subroutine reference to execute when the job begins.  Executes under the
+forked process.
 
 =item run_on_finish
 
-Subroutine reference to execute when the job ends.
+Subroutine reference to execute when the job ends.  Executes on the master
+process.
 
 =item run_after
 
