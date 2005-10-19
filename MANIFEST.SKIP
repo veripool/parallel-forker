@@ -1,0 +1,16 @@
+^CVS/
+/CVS/
+.cvsignore$
+pm_to_blib$
+test_store$
+,v$
+\.old/
+\.(bak|old)$
+\bMakefile$
+^MANIFEST.SKIP$
+\.wpsin$
+\.tar\.
+\bblib\b
+^test_dir/
+/test_dir/
+\.svn/

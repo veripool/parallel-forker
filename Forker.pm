@@ -24,7 +24,7 @@ use Schedule::Load;  # Really only needed for _subprocesses.  Cleanup if release
 use Carp;
 use vars qw($Debug $VERSION);
 
-$VERSION = '1.100';
+$VERSION = '1.200';
 
 ######################################################################
 #### CONSTRUCTOR
@@ -307,18 +307,55 @@ Parallel::Forker - Parallel job forking and management
 
 =head1 DESCRIPTION
 
-Manage parallel processes that are either subroutines or system commands.
-Supports most of the features in all the other little packages out there.
-Function names based loosely on Parallel::ForkManager.
+Parallel::Forker manages parallel processes that are either subroutines or
+system commands.  Forker supports most of the features in all the other
+little packages out there, with the addition of being able to specify
+complicated expressions to determine which processes run after others, or
+run when others fail.
+
+Function names loosely based on Parallel::ForkManager.
+
+The unique property of Parallel::Forker is the ability to schedule
+processes based on expressions that are specified when the processes are
+defined. For example:
+
+   my $p1 = $Fork->schedule(..., label=>'p1');
+   my $p2 = $Fork->schedule(..., label=>'p2');
+   my $p3 = $Fork->schedule(..., run_after => "p1 | p2");
+   my $p4 = $Fork->schedule(..., run_after => "p1 & !p2");
+
+Process p3 is specified to run after process p1 *or* p2 have completed
+successfully.  Process p4 will run after p1 finishes successfuly, and
+process p2 has completed with bad exit status.
+
+For more examples, see the tests.
 
 =head1 METHODS
 
 =over 4
 
+=item $self->find_proc_name (<name>)
+
+Return a Parallel::Forker::Process objects for the given named process, or
+undef if not found.
+
+=item $self->is_any_left
+
+Return true if any processes are running, or runnable (need to run).
+
+=item $self->kill_all (<signal>)
+
+Send a kill to all running children.
+
+=item $self->kill_tree_all (<signal>)
+
+Send a kill to all running children and their subchildren.  Requires
+the Schedule::Load package to be installed.
+
 =item $self->max_proc
 
 Specify the maximum number of processes to run at any one time.  Defaults
-to undef, which runs all jobs at once.
+to undef, which runs all possible jobs at once.
 
 =item $self->new (<parameters>)
 
@@ -330,15 +367,27 @@ application.
 See if any children need work, and service them.  Non-blocking; always
 returns immediately.
 
+=item $self->processes
+
+Return Parallel::Forker::Process objects for all processes.
+
+=item $self->processes_sorted
+
+Return Parallel::Forker::Process objects for all processes, in name sorted order.
+
+=item $self->ready_all
+
+Mark all processes as ready for scheduling.
+
+=item $self->running
+
+Return Parallel::Forker::Process objects for an processes that are currently running.
+
 =item $self->schedule (<parameters>)
 
 Register a new process perhaps for later running.  Returns a
 Parallel::Forker::Process object.  Parameters are passed by name as
 follows:
-
-=item $self->write_tree (filename=><filename>)
-
-Print a dump of the execution tree.
 
 =over 4
 
@@ -384,16 +433,20 @@ multiple Parallel::Forker's each of their sig_child's must be called.
 
 Wait for all running jobs to complete.
 
-=item $self->kill_all (<signal>)
+=item $self->write_tree (filename=><filename>)
 
-Send a kill to all running children.
-
-=item $self->kill_tree_all (<signal>)
-
-Send a kill to all running children and their subchildren.  Requires
-the Schedule::Load package to be installed.
+Print a dump of the execution tree.
 
 =back
+
+=head1 DISTRIBUTION
+
+The latest version is available from CPAN and from
+L<http://www.veripool.com/>.
+
+Copyright 2002-2005 by Wilson Snyder.  This package is free software; you
+can redistribute it and/or modify it under the terms of either the GNU
+Lesser General Public License or the Perl Artistic License.
 
 =head1 AUTHORS
 
@@ -767,9 +820,45 @@ Parallel::Forker::Process - Single parallel fork process object
 
 Manage a single process under the control of Parallel::Forker.
 
+Processes transition over 6 states.  They begin in idle state, and are
+transitioned by the user into ready state.  As their dependancies complete,
+Parallel::Forker transitions them to the runable state.  As the max_proc
+limit permits, they transition to the running state, and executed.  On
+completion, they transition to the done state.  If a process depends on
+another process, and that other process fails, they transition to the
+parerr (parent error) state, and are never run.
+
 =head1 METHODS
 
 =over 4
+
+=item forkref
+
+Return the parent Parallel::Forker object this process belongs to.
+
+=item is_done
+
+Returns true if the process is in the done state.
+
+=item is_idle
+
+Returns true if the process is in the idle state.
+
+=item is_parerr
+
+Returns true if the process is in the parent error state.
+
+=item is_ready
+
+Returns true if the process is in the ready state.
+
+=item is_runable
+
+Returns true if the process is in the runable state.
+
+=item is_running
+
+Returns true if the process is in the running state.
 
 =item kill
 
@@ -778,10 +867,6 @@ Kill the process if it is running
 =item kill_tree
 
 Kill the process and any of it's subchildren.  Requires Schedule::Load.
-
-=item forkref
-
-Return the parent Parallel::Forker object this process belongs to.
 
 =item pid
 
@@ -798,19 +883,37 @@ Mark this process as being ready for execution when all run_after's are
 ready and CPU resources permit.  When that occurs, run will be called on
 the process automatically.
 
+=item kill (<signal>)
+
+Send a kill to this child.
+
+=item kill_tree_all (<signal>)
+
+Send a kill to this child and its subchildren.  Requires the Schedule::Load
+package to be installed.
+
 =item run 
 
 Start this process now.
 
 =back
 
-=head1 SEE ALSO
+=head1 DISTRIBUTION
 
-L<Parallel::Forker>
+The latest version is available from CPAN and from
+L<http://www.veripool.com/>.
+
+Copyright 2002-2005 by Wilson Snyder.  This package is free software; you
+can redistribute it and/or modify it under the terms of either the GNU
+Lesser General Public License or the Perl Artistic License.
 
 =head1 AUTHORS
 
 Wilson Snyder <wsnyder@wsnyder.org>
+
+=head1 SEE ALSO
+
+L<Parallel::Forker>
 
 =cut
 ######################################################################
