@@ -94,7 +94,7 @@ sub run_a_test {
     ok($p1->{my_done_time});   # Check actually ran at some point
     ok($p2->{my_done_time});
     ok($p3->{my_done_time});
-    # Check we executed in parallel (p1&p2), or with appopriate ordering (p1 then p2)
+    # Check we executed in parallel (p1&p2), or with appropriate ordering (p1 then p2)
     ok(tv_interval($p1->{my_done_time},$p2->{my_done_time}) < 0) if $params{run_it};
     ok(tv_interval($p1->{my_done_time},$p2->{my_done_time}) > 0) if $params{wait_it};
 

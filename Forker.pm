@@ -325,7 +325,7 @@ defined. For example:
    my $p4 = $Fork->schedule(..., run_after => "p1 & !p2");
 
 Process p3 is specified to run after process p1 *or* p2 have completed
-successfully.  Process p4 will run after p1 finishes successfuly, and
+successfully.  Process p4 will run after p1 finishes successfully, and
 process p2 has completed with bad exit status.
 
 For more examples, see the tests.
@@ -821,7 +821,7 @@ Parallel::Forker::Process - Single parallel fork process object
 Manage a single process under the control of Parallel::Forker.
 
 Processes transition over 6 states.  They begin in idle state, and are
-transitioned by the user into ready state.  As their dependancies complete,
+transitioned by the user into ready state.  As their dependencies complete,
 Parallel::Forker transitions them to the runable state.  As the max_proc
 limit permits, they transition to the running state, and executed.  On
 completion, they transition to the done state.  If a process depends on
