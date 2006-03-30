@@ -2,6 +2,12 @@ Revision history for Perl extension Parallel::Forker
 
 The contributors that suggested a given feature are shown in [].
 	
+* Parallel::Forker 1.2***
+
+***	Add last-run PID number to write_tree output file.  [Jeff Dutton]
+
+***	Fix poll() setting activity with no runnable processes. [Jeff Dutton]
+
 * Parallel::Forker 1.200 2005/10/19
 
 **	First public release.

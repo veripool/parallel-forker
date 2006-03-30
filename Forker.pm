@@ -120,9 +120,9 @@ sub _wait_one {
 
 sub poll {
     my $self = shift;
+    my $nrunning = 0;
     while ($self->{_activity}) {
 	$self->{_activity} = 0;
-	my $nrunning = 0;
 	foreach my $procref (values %{$self->{_running}}) {
 	    if (my $doneref = $procref->poll()) {
 		$self->{_activity} = 1;
@@ -136,6 +136,7 @@ sub poll {
 	    $nrunning++;
 	}
     }
+    $self->{_activity} = 1 if !$nrunning;  # No one running, we need to check for >run next poll()
 }
 
 sub ready_all {
@@ -165,7 +166,6 @@ sub write_tree {
     my $self = shift;
     my %params = (@_);
     defined $params{filename} or croak "%Error: filename not specified,";
-    use Data::Dumper;
 
     my %did_print;
     my $another_loop = 1;
@@ -655,6 +655,7 @@ sub run {
     $self->{start_time} = time();
     if (my $pid = fork()) {
 	$self->{pid} = $pid;
+	$self->{pid_last_run} = $pid;
 	$self->{_forkref}{_running}{$self->{pid}} = $self;
 	delete $self->{_forkref}{_runable}{$self->{name}};
     } else {
@@ -785,6 +786,7 @@ sub _write_tree_line {
 	    if ($self->{end_time}) {
 		$cmt .= ", End ".format_loctime($self->{end_time});
 		$cmt .= ", Took ".format_time(($self->{end_time}-$self->{start_time}));
+		$cmt .= ", Pid=".$self->{pid_last_run};
 	    }
 	}
     } elsif ($linenum == 2) {
