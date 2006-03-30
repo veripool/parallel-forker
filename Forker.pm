@@ -2,7 +2,7 @@
 # $Id$
 ######################################################################
 #
-# This program is Copyright 2002-2005 by Wilson Snyder.
+# This program is Copyright 2002-2006 by Wilson Snyder.
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of either the GNU General Public License or the
@@ -24,7 +24,7 @@ use Schedule::Load;  # Really only needed for _subprocesses.  Cleanup if release
 use Carp;
 use vars qw($Debug $VERSION);
 
-$VERSION = '1.200';
+$VERSION = '1.201';
 
 ######################################################################
 #### CONSTRUCTOR
@@ -444,7 +444,7 @@ Print a dump of the execution tree.
 The latest version is available from CPAN and from
 L<http://www.veripool.com/>.
 
-Copyright 2002-2005 by Wilson Snyder.  This package is free software; you
+Copyright 2002-2006 by Wilson Snyder.  This package is free software; you
 can redistribute it and/or modify it under the terms of either the GNU
 Lesser General Public License or the Perl Artistic License.
 
@@ -786,7 +786,7 @@ sub _write_tree_line {
 	    if ($self->{end_time}) {
 		$cmt .= ", End ".format_loctime($self->{end_time});
 		$cmt .= ", Took ".format_time(($self->{end_time}-$self->{start_time}));
-		$cmt .= ", Pid=".$self->{pid_last_run};
+		$cmt .= ", Pid ".$self->{pid_last_run};
 	    }
 	}
     } elsif ($linenum == 2) {
@@ -905,7 +905,7 @@ Start this process now.
 The latest version is available from CPAN and from
 L<http://www.veripool.com/>.
 
-Copyright 2002-2005 by Wilson Snyder.  This package is free software; you
+Copyright 2002-2006 by Wilson Snyder.  This package is free software; you
 can redistribute it and/or modify it under the terms of either the GNU
 Lesser General Public License or the Perl Artistic License.
 
