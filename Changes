@@ -2,6 +2,10 @@ Revision history for Perl extension Parallel::Forker
 
 The contributors that suggested a given feature are shown in [].
 	
+* Parallel::Forker 1.202 2006/04/05
+
+****	Remove Schedule::Load dependency.  [Alan Burlison]
+
 * Parallel::Forker 1.201 2006/03/30
 
 ***	Add last-run PID number to write_tree output file.  [Jeff Dutton]

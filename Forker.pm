@@ -18,9 +18,10 @@
 package Parallel::Forker;
 require 5.006;
 use Time::HiRes qw (usleep);
+use Proc::ProcessTable;
+use IO::File;
 
 use strict;
-use Schedule::Load;  # Really only needed for _subprocesses.  Cleanup if release ext.
 use Carp;
 use vars qw($Debug $VERSION);
 
@@ -349,8 +350,7 @@ Send a kill to all running children.
 
 =item $self->kill_tree_all (<signal>)
 
-Send a kill to all running children and their subchildren.  Requires
-the Schedule::Load package to be installed.
+Send a kill to all running children and their subchildren.
 
 =item $self->max_proc
 
@@ -747,7 +747,7 @@ sub kill_tree {
     my $self = shift;
     my $signal = shift || 9;
     return if !$self->{pid};
-    my @proc = (Schedule::Load::_subprocesses($self->{pid}), $self->{pid});
+    my @proc = (Parallel::Forker::_subprocesses($self->{pid}), $self->{pid});
     foreach my $pid (@proc) {
 	print "  Fork Kill -$signal $pid (child of $pid)\n" if $Debug;
 	CORE::kill ($signal, $pid);
@@ -802,6 +802,29 @@ sub _write_tree_line {
 		    "",
 		    $cmt);
 }
+
+sub _subprocesses {
+    my $parent = shift || $$;
+    # All pids under the given parent
+    # Used by testing module
+    # Same function in Schedule::Load::_subprocesses
+    my $pt = new Proc::ProcessTable( 'cache_ttys' => 1); 
+    my %parent_pids;
+    foreach my $p (@{$pt->table}) {
+	$parent_pids{$p->pid} = $p->ppid;
+    }
+    my @out;
+    my @search = ($parent);
+    while ($#search > -1) {
+	my $pid = shift @search;
+	push @out, $pid if $pid ne $parent;
+	foreach (keys %parent_pids) {
+	    push @search, $_ if $parent_pids{$_} == $pid;
+	}
+    }
+    return @out;
+}
+
 ######################################################################
 #### Package return
 1;
@@ -868,7 +891,7 @@ Kill the process if it is running
 
 =item kill_tree
 
-Kill the process and any of it's subchildren.  Requires Schedule::Load.
+Kill the process and any of it's subchildren.
 
 =item pid
 
@@ -891,8 +914,7 @@ Send a kill to this child.
 
 =item kill_tree_all (<signal>)
 
-Send a kill to this child and its subchildren.  Requires the Schedule::Load
-package to be installed.
+Send a kill to this child and its subchildren.
 
 =item run 
 

@@ -6,6 +6,7 @@ version_from: Forker.pm
 installdirs:  site
 requires:
     Time::HiRes:                   0
+    Proc::ProcessTable:            0.40
 
 distribution_type: module
 generated_by: ExtUtils::MakeMaker version 6.17
