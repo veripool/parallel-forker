@@ -25,7 +25,7 @@ use strict;
 use Carp;
 use vars qw($Debug $VERSION);
 
-$VERSION = '1.201';
+$VERSION = '1.202';
 
 ######################################################################
 #### CONSTRUCTOR
