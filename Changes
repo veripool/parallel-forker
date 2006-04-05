@@ -2,6 +2,10 @@ Revision history for Perl extension Parallel::Forker
 
 The contributors that suggested a given feature are shown in [].
 	
+* Parallel::Forker 1.210 ******
+
+***     Internal reorganization of modules and comments.
+
 * Parallel::Forker 1.202 2006/04/05
 
 ****	Remove Schedule::Load dependency.  [Alan Burlison]
