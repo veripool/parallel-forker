@@ -5,8 +5,8 @@ version:      1.202
 version_from: Forker.pm
 installdirs:  site
 requires:
+    Proc::ProcessTable:            0.4
     Time::HiRes:                   0
-    Proc::ProcessTable:            0.40
 
 distribution_type: module
 generated_by: ExtUtils::MakeMaker version 6.17
