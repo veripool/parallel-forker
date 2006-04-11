@@ -30,6 +30,7 @@ The contributors that suggested a given feature are shown in [].
 
 ----------------------------------------------------------------------
 $Id$
+DESCRIPTION: Documentation on change history for this package
 ----------------------------------------------------------------------
 
 This uses outline mode in Emacs.  See C-h m [M-x describe-mode].
