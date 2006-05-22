@@ -2,6 +2,10 @@ Revision history for Perl extension Parallel::Forker
 
 The contributors that suggested a given feature are shown in [].
 	
+* Parallel::Forker 1.211*****
+
+****    Fix kill_tree causing _subprocesses error message
+
 * Parallel::Forker 1.210 2006/05/19
 
 ***     Internal reorganization of modules and comments.

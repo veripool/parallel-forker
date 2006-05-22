@@ -308,7 +308,7 @@ sub kill_tree {
     my $self = shift;
     my $signal = shift || 9;
     return if !$self->{pid};
-    my @proc = (Parallel::Forker::_subprocesses($self->{pid}), $self->{pid});
+    my @proc = (_subprocesses($self->{pid}), $self->{pid});
     foreach my $pid (@proc) {
 	print "  Fork Kill -$signal $pid (child of $pid)\n" if $Debug;
 	CORE::kill ($signal, $pid);
