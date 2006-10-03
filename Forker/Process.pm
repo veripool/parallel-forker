@@ -26,7 +26,7 @@ use Carp;
 use POSIX qw(sys_wait_h :signal_h);
 use vars qw($Debug $VERSION $HashId);
 
-$VERSION = '1.210';
+$VERSION = '1.211';
 
 $Debug = $Parallel::Forker::Debug;
 $HashId = 0;
