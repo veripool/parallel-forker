@@ -7,6 +7,7 @@ META.yml			Module meta-data (added by MakeMaker)
 README
 readme.texi
 t/00_pod.t
+t/01_manifest.t
 t/10_forker.t
 t/11_dashes.t
 t/12_rsh.t
