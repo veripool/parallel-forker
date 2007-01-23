@@ -115,8 +115,7 @@ sub _wait_one {
     # Poll.  Return 0 if someone still has work left, else undef.
     $self->poll();
     #print "NRUNNING ", scalar ( (keys %{$self->{_running}}) ), "\n";
-    return 0 if ( (keys %{$self->{_runable}}) > 0 );
-    return 0 if ( (keys %{$self->{_running}}) > 0 );
+    return 0 if $self->is_any_left;
     return undef;
 }
 
@@ -125,10 +124,10 @@ sub poll {
     my $nrunning = 0;
     while ($self->{_activity}) {
 	$self->{_activity} = 0;
+	$nrunning = 0;
 	foreach my $procref (values %{$self->{_running}}) {
 	    if (my $doneref = $procref->poll()) {
 		$self->{_activity} = 1;
-		return $doneref;
 	    }
 	    $nrunning++;
 	}
