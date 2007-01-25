@@ -9,9 +9,9 @@
 
 use Test;
 use strict;
-use Time::HiRes qw (gettimeofday usleep tv_interval);
+use Time::HiRes qw (gettimeofday usleep tv_interval sleep time);
 
-BEGIN { plan tests => 31 }
+BEGIN { plan tests => 43 }
 BEGIN { require "t/test_utils.pl"; }
 
 BEGIN { $Parallel::Forker::Debug = 1; }
@@ -30,11 +30,111 @@ ok(1);
 
 {
     my $Didit;
-    $fork->schedule(run_on_start => sub { },
-		    run_on_finish => sub { $Didit = 1 },
-		    ) ->run();
+    my ($start_pid, $finish_pid);
+    $fork->schedule (
+		     run_on_start => sub { $start_pid = $$; },
+		     run_on_finish => sub { $Didit = 1; $finish_pid = $$; },
+		     ) ->run();
     $fork->wait_all();   # Wait for all children to finish
     ok($Didit);
+    ok(not defined $start_pid); # runs in child
+    ok($finish_pid, $$); # runs in parent (us)
+}
+
+sub restarting_sleep {
+    my ($seconds) = @_;
+    my $start = time;
+    my $time_left;
+    while ($time_left = (time - $start) < $seconds) {
+	sleep($seconds - $time_left);
+    }
+}
+
+# poll() services multiple completed children and starts correct number of new
+#   workers
+# Method:
+#  - Cap processes at 3
+#  - Schedule 6 processes, the first two of which will exit quickly
+#  - Wait long enough for first two to finish
+#  - poll() should fire both run_on_finish callbacks
+#  - Current running process count should be 3 again (3rd original process
+#    plus two new ones)
+{
+    my @done;
+    sub quick_sleep { sleep 1 }
+    sub slow_sleep { sleep 7 }
+    sub finish_func { push @done, $_[0]{name} }
+
+    $fork->max_proc(3);
+    $fork->schedule (
+		     name => 'p1',
+		     run_on_start => \&quick_sleep,
+		     run_on_finish => \&finish_func,
+		     );
+    $fork->schedule (
+		     name => 'p2',
+		     run_on_start => \&quick_sleep,
+		     run_on_finish => \&finish_func,
+		     );
+    $fork->schedule (
+		     name => 'p3',
+		     run_on_start => \&slow_sleep,
+		     run_on_finish => \&finish_func,
+		     );
+    $fork->schedule (
+		     name => 'p4',
+		     run_on_start => \&quick_sleep,
+		     run_on_finish => \&finish_func,
+		     run_after => ['p1 | p2 | p3'],
+		     );
+    $fork->schedule (
+		     name => 'p5',
+		     run_on_start => \&quick_sleep,
+		     run_on_finish => \&finish_func,
+		     run_after => ['p1 | p2 | p3'],
+		     );
+    $fork->schedule (
+		     name => 'p6',
+		     run_on_start => \&quick_sleep,
+		     run_on_finish => \&finish_func,
+		     run_after => ['p1 | p2 | p3'],
+		     );
+
+    # Nothing should have started running yet.
+    my $running_count = $fork->running;
+    ok( $running_count, 0 );
+
+    $fork->ready_all;
+
+    # should have 3 runable and 3 waiting on dependencies (ready)
+    ok( scalar(grep { $_->is_ready } $fork->processes), 3 );
+    ok( scalar(grep { $_->is_runable } $fork->processes), 3 );
+
+    restarting_sleep(1);
+
+    # Still nothing running...
+    $running_count = $fork->running;
+    ok( $running_count, 0 );
+
+    $fork->poll;
+    print "#  Should have fired off 3 by now...\n";
+    restarting_sleep(3);
+    print "#  First two should have exited by now...\n";
+
+    # First three should have spawned
+    $running_count = scalar $fork->running;
+    ok( $running_count, 3 );
+    ok( scalar(@done), 0 );  # no done call-backs fired yet
+
+    $fork->poll;
+
+    ok( scalar(grep { $_->is_running } $fork->processes), 3 );
+    ok( scalar(grep { $_->is_runable } $fork->processes), 1 );
+    ok( scalar(@done), 2 ); # called both finished processes' callbacks
+
+    $fork->wait_all;
+
+    ok( scalar(@done), 6 ); # sanity check
 }
 
 run_a_test(run_it=>1);

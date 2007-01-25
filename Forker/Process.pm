@@ -412,10 +412,10 @@ method, and retrieved by various methods in that class.
 Processes transition over 6 states.  They begin in idle state, and are
 transitioned by the user into ready state.  As their dependencies complete,
 Parallel::Forker transitions them to the runable state.  As the max_proc
-limit permits, they transition to the running state, and executed.  On
+limit permits, they transition to the running state, and get executed.  On
 completion, they transition to the done state.  If a process depends on
-another process, and that other process fails, they transition to the
-parerr (parent error) state, and are never run.
+another process, and that other process fails, it transitions to the parerr
+(parent error) state, and is never run.
 
 =head1 METHODS
 
@@ -449,21 +449,20 @@ Returns true if the process is in the runable state.
 
 Returns true if the process is in the running state.
 
-=item kill
-
-Kill the process if it is running
-
 =item kill (<signal>)
 
-Send a kill to this child.
+Send the specified signal to the process if it is running.  If no signal is
+specified, send a SIGKILL (9).
 
-=item kill_tree
+=item kill_tree (<signal>)
 
-Kill the process and any of its subchildren.
+Send the specified signal to the process (and its subchildren) if it is
+running.  If no signal is specified, send a SIGKILL (9).
 
 =item kill_tree_all (<signal>)
 
-Send a kill to this child and its subchildren.
+Send a signal to this child (and its subchildren) if it is running.  If no
+signal is specified, send a SIGKILL (9).
 
 =item name
 
@@ -480,7 +479,7 @@ Return the process ID if this job is running, else undef.
 =item poll
 
 Check the process for activity, invoking callbacks if needed.
-Generally Fork->poll() is used instead.
+Generally Parallel::Forker's object method poll() is used instead.
 
 =item ready
 
@@ -490,14 +489,14 @@ the process automatically.
 
 =item run 
 
-Start this process now.
+Unconditionally move the process to the "running" state and start it.
 
 =item run_after
 
 Add a new (or list of) processes that must be completed before this process
 can be runnable.  You may pass a process object (from schedule), a process
 name, or a process label.  You may use "|" or "&" in a string to run this
-process after a OR of any processes exit, or after ALL exit (the default.)
+process after ANY processes exit, or after ALL exit (the default.)
 ! in front of a process name indicates to run if that process fails with
 bad exit status.  ^ in front of a process indicates to run if that process
 succeeds OR fails.
