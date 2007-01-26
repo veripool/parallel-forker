@@ -87,9 +87,11 @@ sub sig_child {
 
 sub wait_all {
     my $self = shift;
-    while (defined $self->_wait_one()) {
+    while ($self->is_any_left) {
+	#print "NRUNNING ", scalar ( (keys %{$self->{_running}}) ), "\n";
+	$self->poll;
 	usleep 100*1000;
-    }
+    };
 }
 
 sub is_any_left {
@@ -110,32 +112,22 @@ sub find_proc_name {
     return undef;
 }
 
-sub _wait_one {
-    my $self = shift;
-    # Poll.  Return 0 if someone still has work left, else undef.
-    $self->poll();
-    #print "NRUNNING ", scalar ( (keys %{$self->{_running}}) ), "\n";
-    return 0 if $self->is_any_left;
-    return undef;
-}
-
 sub poll {
     my $self = shift;
-    my $nrunning = 0;
-    while ($self->{_activity}) {
-	$self->{_activity} = 0;
-	$nrunning = 0;
-	foreach my $procref (values %{$self->{_running}}) {
-	    if (my $doneref = $procref->poll()) {
-		$self->{_activity} = 1;
-	    }
-	    $nrunning++;
-	}
-	foreach my $procref (values %{$self->{_runable}}) {
-	    last if ($self->{max_proc} && $nrunning >= $self->{max_proc});
-	    $procref->run;
-	    $nrunning++;
-	}
+    return if !$self->{_activity};
+
+    # We don't have a loop around this any more, as we want to allow
+    # applications to do other work.  We'd also need to be careful not to
+    # set _activity with no one runnable, as it would potentially cause a
+    # inifinite loop.
+
+    $self->{_activity} = 0;
+    my $nrunning = grep { not $_->poll } (values %{$self->{_running}});
+
+    foreach my $procref (values %{$self->{_runable}}) {
+	last if ($self->{max_proc} && $nrunning >= $self->{max_proc});
+	$procref->run;
+	$nrunning++;
     }
     $self->{_activity} = 1 if !$nrunning;  # No one running, we need to check for >run next poll()
 }
@@ -305,6 +297,11 @@ Parallel::Forker - Parallel job forking and management
    # Other functions
    $Fork->poll();       # Service any active children
    foreach my $proc ($Fork->running()) {   # Loop on each running child
+
+   while ($self->is_any_left) {
+       $Fork->poll;
+       usleep(10*1000);
+   }
 
 =head1 DESCRIPTION
 
