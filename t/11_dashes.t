@@ -10,7 +10,7 @@
 use Test;
 use strict;
 
-BEGIN { plan tests => 9 }
+BEGIN { plan tests => 12 }
 BEGIN { require "t/test_utils.pl"; }
 
 BEGIN { $Parallel::Forker::Debug = 1; }
@@ -23,6 +23,9 @@ ok(1);
 a_test(0);
 a_test(1);
 
+my %Didit;
+sub didit { $Didit{$_[0]->name} = 1 }
+
 sub a_test {
     my $failit = shift;
 
@@ -32,7 +35,7 @@ sub a_test {
     ok(1);
 
     # Test use of -'s in run_afters
-    my %Didit;
+    %Didit = ();
 
     $fork->schedule(name => 'a',
 		    run_on_start => sub {
@@ -51,37 +54,51 @@ sub a_test {
 		    );
     $fork->schedule(name => 'b',
 		    run_on_start => sub { },
-		    run_on_finish => sub { $Didit{b} = 1 },
+		    run_on_finish => \&didit,
 		    run_after => ['| a'],
 		    label => 'd2',
 		    );
     my $na =
     $fork->schedule(name => 'c',
 		    run_on_start => sub { },
-		    run_on_finish => sub { $Didit{c} = 1 },
+		    run_on_finish => \&didit,
 		    run_after => ['!a'],
 		    label => 'd3',
 		    );
     $fork->schedule(name => 'd',
 		    run_on_start => sub { },
-		    run_on_finish => sub { $Didit{d} = 1 },
+		    run_on_finish => \&didit,
 		    run_after => ['^a'],
 		    );
     $fork->schedule(name => 'e',
 		    run_on_start => sub { },
-		    run_on_finish => sub { $Didit{e} = 1 },
+		    run_on_finish => \&didit,
 		    run_after => [$na],
 		    );
     $fork->schedule(name => 'e2',
 		    run_on_start => sub { },
-		    run_on_finish => sub { $Didit{e2} = 1 },
+		    run_on_finish => \&didit,
 		    run_after => ['e'],
 		    );
     $fork->schedule(name => 'f',
 		    run_on_start => sub { },
-		    run_on_finish => sub { $Didit{f} = 1 },
+		    run_on_finish => \&didit,
 		    run_after => ["d2 | d3"],
 		    );
+
+    # Check implicit and'ing (will never run)
+    $fork->schedule(name => 'g',
+      run_on_start => sub {},
+      run_on_finish => \&didit,
+      run_after => ['b', $na],
+    );
+
+    # Check implicit and'ing (will run if NOT $failit)
+    $fork->schedule(name => 'h',
+      run_on_start => sub {},
+      run_on_finish => \&didit,
+      run_after => ['d', $na],
+    );
 
     # Run them
     $fork->ready_all();
@@ -90,19 +107,76 @@ sub a_test {
     # Check right procs died
     print " Didit: ", (join ' ',(sort (keys %Didit))), "\n";
     if ($failit) {
-	ok($Didit{a} && !$Didit{b} && $Didit{c} && $Didit{d} && $Didit{f});
+	ok($Didit{a} && !$Didit{b} && $Didit{c} && $Didit{d} && $Didit{f}
+          && !$Didit{g} && $Didit{h});
     } else {
-	ok($Didit{a} && $Didit{b} && !$Didit{c} && $Didit{d} && $Didit{f});
+	ok($Didit{a} && $Didit{b} && !$Didit{c} && $Didit{d} && $Didit{f}
+          && !$Didit{g} && !$Didit{h});
     }
     ok( (($Didit{e}||-1) == ($Didit{c}||-1))
 	&& (($Didit{e}||-1) == ($Didit{e2}||-1)));
 
-    # Check all marked
-    my $o=1;
-    foreach my $procref ($fork->processes) {
-	if (!$procref->is_done && !$procref->is_parerr) {
-	    print " %Error: process $procref->{name} is $procref->{_state} not done\n";
-	}
+    # Check all marked appropriately
+    sub names_are {
+      my ($fork, $method) = @_;
+      return join('', map { $_->name }
+        grep { $_->$method } $fork->processes_sorted);
     }
-    ok($o);
+    
+    if ($failit) {
+      ok( names_are($fork, 'is_parerr'), 'bg' );
+      ok( names_are($fork, 'is_done'), 'acdee2fh' );
+    } else {
+      ok( names_are($fork, 'is_parerr'), 'cee2gh' );
+      ok( names_are($fork, 'is_done'), 'abdf' );
+    }
+}
+
+# Full ordering test (simple tree with one diamond, so there's just two possibilities)
+#         a
+#         |
+#         b
+#        / \
+#       c  d
+#       \ /
+#        e
+#        |
+#        f
+{
+  my $fork = new Parallel::Forker;
+  $SIG{CHLD} = sub { Parallel::Forker::sig_child($fork); };
+  $SIG{TERM} = sub { $fork->kill_tree_all('TERM') if $fork; die "Quitting...\n"; };
+
+  my @done_order;
+  sub done { push @done_order, $_[0]->name }
+  my %args = (
+    run_on_start => sub {},
+    run_on_finish => \&done,
+  );
+
+  $fork->schedule(name => 'a', %args);
+  $fork->schedule(name => 'b', %args,
+    run_after => ['a'],
+  );
+  $fork->schedule(name => 'c', %args,
+    run_after => ['b'],
+  );
+  $fork->schedule(name => 'd', %args,
+    run_after => ['b'],
+  );
+  $fork->schedule(name => 'e', %args,
+    run_after => ['d', 'c'],
+  );
+  $fork->schedule(name => 'f', %args,
+    run_after => ['e'],
+  );
+
+  $fork->ready_all;
+  $fork->wait_all;
+
+  ok(
+    "@done_order" eq "a b c d e f"
+    ||
+    "@done_order" eq "a b d c e f"
+  );
 }
