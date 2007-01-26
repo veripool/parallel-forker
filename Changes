@@ -2,6 +2,12 @@ Revision history for Perl extension Parallel::Forker
 
 The contributors that suggested a given feature are shown in [].
 	
+* Parallel::Forker 1.213 2007/1/28
+
+****    Internal refactoring of poll and wait_all routines.
+
+****    Documentation cleanups. [Darrell Bishop]
+
 * Parallel::Forker 1.212 2007/1/23
 
 ****    Extend poll() to allow multiple processes to complete. [Darrell Bishop]
