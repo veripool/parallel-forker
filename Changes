@@ -2,6 +2,11 @@ Revision history for Perl extension Parallel::Forker
 
 The contributors that suggested a given feature are shown in [].
 	
+* Parallel::Forker 1.214 2007/2/1
+
+****    Fix hang in applications that call poll without sig_child.
+	This broke in 1.212 and 1.213. [Venkataramana Mokkapati]
+
 * Parallel::Forker 1.213 2007/1/28
 
 ****    Internal refactoring of poll and wait_all routines.

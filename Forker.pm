@@ -114,7 +114,9 @@ sub find_proc_name {
 
 sub poll {
     my $self = shift;
-    return if !$self->{_activity};
+    # For backward compatibilty, we allow poll to check for processes exit,
+    # without requiring calls to sig_child.
+    #return if !$self->{_activity};
 
     # We don't have a loop around this any more, as we want to allow
     # applications to do other work.  We'd also need to be careful not to
