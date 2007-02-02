@@ -479,7 +479,7 @@ Return the process ID if this job is running, else undef.
 =item poll
 
 Check the process for activity, invoking callbacks if needed.
-Generally Parallel::Forker's object method poll() is used instead.
+Generally Parallel::Forker's object method C<poll()> is used instead.
 
 =item ready
 

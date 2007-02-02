@@ -42,6 +42,7 @@ sub new {
 	_in_child => 0,		# In a child process, don't allow forking
 	_run_after_eqn => undef,# Equation to eval to determine if ready to launch
 	max_proc => undef,	# Number processes to launch, <1=any, +=that number
+	use_sig_child => 0,	# Default to not using SIGCHLD handler
 	@_
     };
     bless $self, ref($class)||$class;
@@ -54,6 +55,12 @@ sub max_proc {
     my $self = shift;
     $self->{max_proc} = shift if $#_>=0;
     return $self->{max_proc};
+}
+
+sub use_sig_child {
+    my $self = shift;
+    $self->{use_sig_child} = shift if $#_>=0;
+    return $self->{use_sig_child};
 }
 
 sub running {
@@ -114,9 +121,7 @@ sub find_proc_name {
 
 sub poll {
     my $self = shift;
-    # For backward compatibilty, we allow poll to check for processes exit,
-    # without requiring calls to sig_child.
-    #return if !$self->{_activity};
+    return if $self->use_sig_child && !$self->{_activity};
 
     # We don't have a loop around this any more, as we want to allow
     # applications to do other work.  We'd also need to be careful not to
@@ -131,7 +136,9 @@ sub poll {
 	$procref->run;
 	$nrunning++;
     }
-    $self->{_activity} = 1 if !$nrunning;  # No one running, we need to check for >run next poll()
+    # If no one's running, we need _activity set to check for runable -> running
+    # transitions during the next call to poll().
+    $self->{_activity} = 1 if !$nrunning;
 }
 
 sub ready_all {
@@ -282,6 +289,7 @@ Parallel::Forker - Parallel job forking and management
    use Parallel::Forker;
    $Fork = new Parallel::Forker;
    $SIG{CHLD} = sub { Fork::sig_child($Fork); };
+   $Fork->use_sig_child(1);
    $SIG{TERM} = sub { $Fork->kill_tree_all('TERM') if $Fork; die "Quitting...\n"; };
 
    $Fork->schedule(run_on_start => sub {print "child work here...";},
@@ -360,8 +368,9 @@ to undef, which runs all possible jobs at once.
 =item $self->new (<parameters>)
 
 Create a new manager object.  There may be more then one manager in any
-application, but each manager's sig_child method should be called in the
-application's SIGCHLD handler.
+application, but applications taking advantage of the sig_child handler
+should call every manager's C<sig_child> method in the application's
+C<SIGCHLD> handler.
 
 =item $self->poll
 
@@ -382,7 +391,8 @@ Mark all processes as ready for scheduling.
 
 =item $self->running
 
-Return Parallel::Forker::Process objects for an processes that are currently running.
+Return Parallel::Forker::Process objects for all processes that are
+currently running.
 
 =item $self->schedule (<parameters>)
 
@@ -394,13 +404,13 @@ follows:
 
 =item label
 
-Optional name to use in run_after commands.  Unlike name, this may be
-reused, in which case run_after will wait on all commands with the given
+Optional name to use in C<run_after> commands.  Unlike C<name>, this may be
+reused, in which case C<run_after> will wait on all commands with the given
 label.
 
 =item name
 
-Optional name to use in run_after commands.  Note that names MUST be
+Optional name to use in C<run_after> commands.  Note that names MUST be
 unique!  When not specified, a unique number will be assigned
 automatically.
 
@@ -428,8 +438,17 @@ succeeds OR fails.
 
 =item $self->sig_child
 
-Must be called in SIG{CHLD} handler by the parent process.  If there are
-multiple Parallel::Forker's each of their sig_child's must be called.
+Must be called in a C<$SIG{CHLD}> handler by the parent process if
+C<use_sig_child> was called with a "true" value.  If there are multiple
+Parallel::Forker objects each of their C<sig_child> methods must be called
+in the C<$SIG{CHLD}> handler.
+
+=item $self->use_sig_child ( 0 | 1 )
+
+If you install a C<$SIG{CHLD}> handler which calls your Parallel::Forker
+object's C<sig_child> method, you should also turn on C<use_sig_child>, by
+calling it with a "true" argument.  Then, calls to C<poll()> will do less work
+when there are no children processes to be reaped.
 
 =item $self->wait_all
 

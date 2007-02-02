@@ -11,7 +11,7 @@ use Test;
 use strict;
 use Time::HiRes qw (gettimeofday usleep tv_interval sleep time);
 
-BEGIN { plan tests => 43 }
+BEGIN { plan tests => 49 }
 BEGIN { require "t/test_utils.pl"; }
 
 BEGIN { $Parallel::Forker::Debug = 1; }
@@ -26,6 +26,7 @@ ok(1);
 
 $SIG{CHLD} = sub { Parallel::Forker::sig_child($fork); };  # Not method, as is less stuff for a handler to do
 $SIG{TERM} = sub { $fork->kill_tree_all('TERM') if $fork; die "Quitting...\n"; };
+$fork->use_sig_child(1);
 ok(1);
 
 {
@@ -205,3 +206,39 @@ sub run_a_test {
     $fork->write_tree(filename=>"test_dir/10_write_tree_$WTN.log");
 }
 
+# White-box test to ensure that poll() short-circuits and does less work IF
+#   you have use_sig_child set to true and _activity is false.
+{
+    # sanity-check precondition:
+    ok( $fork->use_sig_child );
+  
+    my $done;
+    $fork->schedule(
+		    name => 'f1',
+		    run_on_start => sub {},
+		    run_on_finish => sub { $done = 1 },
+		    );
+
+    $fork->ready_all;
+    $fork->poll;
+
+    # should be 1 running process now
+    ok( scalar(grep { $_->is_running } $fork->processes), 1 );
+
+    sleep 2;
+    $fork->{_activity} = 0;
+
+    # because use_sig_child is 1 and _activity is 0, poll() does no work:
+    $fork->poll;
+
+    # still have one "running" process
+    ok( scalar(grep { $_->is_running } $fork->processes), 1 );
+    ok( not $done );
+
+    # but if we have activity (like the sig_child() makes true), we do work:
+    $fork->sig_child;
+    $fork->poll;
+
+    ok( scalar(grep { $_->is_running } $fork->processes), 0 );
+    ok( $done, 1 );
+}

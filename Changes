@@ -2,6 +2,10 @@ Revision history for Perl extension Parallel::Forker
 
 The contributors that suggested a given feature are shown in [].
 	
+* Parallel::Forker 1.220 2007/2/2
+
+****	Add use_sig_child method, and accelerate poll.  [Darrell Bishop]
+
 * Parallel::Forker 1.214 2007/2/1
 
 ****    Fix hang in applications that call poll without sig_child.
