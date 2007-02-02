@@ -411,11 +411,12 @@ method, and retrieved by various methods in that class.
 
 Processes transition over 6 states.  They begin in idle state, and are
 transitioned by the user into ready state.  As their dependencies complete,
-Parallel::Forker transitions them to the runable state.  As the max_proc
-limit permits, they transition to the running state, and get executed.  On
-completion, they transition to the done state.  If a process depends on
-another process, and that other process fails, it transitions to the parerr
-(parent error) state, and is never run.
+Parallel::Forker transitions them to the runable state.  As the
+Parallel::Forker object's C<max_proc> limit permits, they transition to the
+running state, and get executed.  On completion, they transition to the
+done state.  If a process depends on another process, and that other
+process fails, the dependant process transitions to the parerr (parent
+error) state, and is never run.
 
 =head1 METHODS
 
@@ -483,7 +484,7 @@ Generally Parallel::Forker's object method C<poll()> is used instead.
 
 =item ready
 
-Mark this process as being ready for execution when all run_after's are
+Mark this process as being ready for execution when all C<run_after>'s are
 ready and CPU resources permit.  When that occurs, run will be called on
 the process automatically.
 

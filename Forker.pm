@@ -360,7 +360,7 @@ Send a signal to all running children.
 
 Send a signal to all running children and their subchildren.
 
-=item $self->max_proc
+=item $self->max_proc (<number>)
 
 Specify the maximum number of processes to run at any one time.  Defaults
 to undef, which runs all possible jobs at once.
@@ -371,6 +371,20 @@ Create a new manager object.  There may be more then one manager in any
 application, but applications taking advantage of the sig_child handler
 should call every manager's C<sig_child> method in the application's
 C<SIGCHLD> handler.
+
+Parameters are passed by name as follows:
+
+=over 4
+
+=item max_proc => (<number>)
+
+See the C<max_proc> object method.
+
+=item use_sig_child => ( 0 | 1 )
+
+See the C<use_sig_child> object method.
+
+=back
 
 =item $self->poll
 
