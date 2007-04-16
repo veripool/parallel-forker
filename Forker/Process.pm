@@ -48,6 +48,11 @@ sub _new {
     };
     $Debug = $Parallel::Forker::Debug;
     bless $self, ref($class)||$class;
+    # Users need to delete the old one first, if they care.
+    # We don't do that automatically, as generally this is a mistake, and
+    # deleting the old one may terminate a process or have other nasty effects.
+    (!exists $self->{_forkref}{_processes}{$self->{name}})
+	or croak "%Error: Creating a new process under the same name as an existing process: $self->{name},";
     $self->{_forkref}{_processes}{$self->{name}} = $self;
     if (defined $self->{label}) {
 	if (ref $self->{label}) {
