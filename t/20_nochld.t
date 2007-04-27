@@ -22,7 +22,7 @@ ok(1);
 
 ######################################################################
 
-my $fork = new Parallel::Forker;
+my $fork = new Parallel::Forker (use_sig_child=>0);
 ok(1);
 
 # Not required in old versions, so make sure we still work

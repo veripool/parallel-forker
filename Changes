@@ -4,6 +4,8 @@ The contributors that suggested a given feature are shown in [].
 	
 * Parallel::Forker 1.22**
 
+****    Warn if use_sig_child is not specified, as it's important to know.
+
 ****	Report error if create or schedule a task, and the same name exists.
 
 * Parallel::Forker 1.220 2007/2/2

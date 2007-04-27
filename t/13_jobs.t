@@ -23,7 +23,7 @@ ok(1);
 a_test();
 
 sub a_test {
-    my $fork = new Parallel::Forker ();
+    my $fork = new Parallel::Forker (use_sig_child=>1);
     $fork->max_proc(3);
 
     $SIG{CHLD} = sub { Parallel::Forker::sig_child($fork); };

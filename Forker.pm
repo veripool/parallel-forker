@@ -42,7 +42,7 @@ sub new {
 	_in_child => 0,		# In a child process, don't allow forking
 	_run_after_eqn => undef,# Equation to eval to determine if ready to launch
 	max_proc => undef,	# Number processes to launch, <1=any, +=that number
-	use_sig_child => 0,	# Default to not using SIGCHLD handler
+	use_sig_child => undef,	# Default to not using SIGCHLD handler
 	@_
     };
     bless $self, ref($class)||$class;
@@ -119,9 +119,17 @@ sub find_proc_name {
     return undef;
 }
 
+our $_Warned_Use_Sig_Child;
+
 sub poll {
     my $self = shift;
     return if $self->use_sig_child && !$self->{_activity};
+    if (!defined $self->use_sig_child) {
+	carp "%Warning: Forker object should be new'ed with use_sig_child=>0 or 1, "
+	    if ($^W && !$_Warned_Use_Sig_Child);
+	$_Warned_Use_Sig_Child = 1;
+	$self->use_sig_child(0);
+    }
 
     # We don't have a loop around this any more, as we want to allow
     # applications to do other work.  We'd also need to be careful not to
@@ -277,6 +285,7 @@ sub max {
     return $rtn;
 }
 
+1;
 ######################################################################
 =pod
 
@@ -287,9 +296,8 @@ Parallel::Forker - Parallel job forking and management
 =head1 SYNOPSIS
 
    use Parallel::Forker;
-   $Fork = new Parallel::Forker;
+   $Fork = new Parallel::Forker (use_sig_child=>1);
    $SIG{CHLD} = sub { Fork::sig_child($Fork); };
-   $Fork->use_sig_child(1);
    $SIG{TERM} = sub { $Fork->kill_tree_all('TERM') if $Fork; die "Quitting...\n"; };
 
    $Fork->schedule(run_on_start => sub {print "child work here...";},
@@ -382,7 +390,8 @@ See the C<max_proc> object method.
 
 =item use_sig_child => ( 0 | 1 )
 
-See the C<use_sig_child> object method.
+See the C<use_sig_child> object method.  This option must be specified to
+prevent a warning.
 
 =back
 
@@ -459,10 +468,12 @@ in the C<$SIG{CHLD}> handler.
 
 =item $self->use_sig_child ( 0 | 1 )
 
-If you install a C<$SIG{CHLD}> handler which calls your Parallel::Forker
-object's C<sig_child> method, you should also turn on C<use_sig_child>, by
-calling it with a "true" argument.  Then, calls to C<poll()> will do less work
-when there are no children processes to be reaped.
+This should always be called with a 0 or 1.  If you install a C<$SIG{CHLD}>
+handler which calls your Parallel::Forker object's C<sig_child> method, you
+should also turn on C<use_sig_child>, by calling it with a "true" argument.
+Then, calls to C<poll()> will do less work when there are no children
+processes to be reaped.  If not using the handler call with 0 to prevent a
+warning.
 
 =item $self->wait_all
 
