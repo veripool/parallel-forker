@@ -8,6 +8,8 @@ The contributors that suggested a given feature are shown in [].
 
 ****	Report error if create or schedule a task, and the same name exists.
 
+****	Documentation cleanups. [Bryce Denney]
+
 * Parallel::Forker 1.220 2007/2/2
 
 ****	Add use_sig_child method, and accelerate poll.  [Darrell Bishop]

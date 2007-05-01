@@ -297,13 +297,14 @@ Parallel::Forker - Parallel job forking and management
 
    use Parallel::Forker;
    $Fork = new Parallel::Forker (use_sig_child=>1);
-   $SIG{CHLD} = sub { Fork::sig_child($Fork); };
+   $SIG{CHLD} = sub { Parallel::Forker::sig_child($Fork); };
    $SIG{TERM} = sub { $Fork->kill_tree_all('TERM') if $Fork; die "Quitting...\n"; };
 
-   $Fork->schedule(run_on_start => sub {print "child work here...";},
-		   run_on_finish => sub {print "parent cleanup here...";},
-		   )
-	    ->run();
+   $Fork->schedule
+      (run_on_start => sub {print "child work here...";},
+       # run_on_start => \&child_subroutine,  # Alternative: call a named sub.
+       run_on_finish => sub {print "parent cleanup here...";},
+       )->run();
 
    $Fork->wait_all();   # Wait for all children to finish
 
@@ -316,7 +317,7 @@ Parallel::Forker - Parallel job forking and management
    $Fork->poll();       # Service any active children
    foreach my $proc ($Fork->running()) {   # Loop on each running child
 
-   while ($self->is_any_left) {
+   while ($Fork->is_any_left) {
        $Fork->poll;
        usleep(10*1000);
    }
