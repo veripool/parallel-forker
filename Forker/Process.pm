@@ -77,6 +77,7 @@ sub DESTROY {
 sub name { return $_[0]->{name}; }
 sub label { return $_[0]->{label}; }
 sub pid { return $_[0]->{pid}; }
+sub status { return $_[0]->{status}; }
 sub forkref { return $_[0]->{_forkref}; }
 sub is_idle    { return $_[0]->{_state} eq 'idle'; }
 sub is_ready   { return $_[0]->{_state} eq 'ready'; }
@@ -506,6 +507,12 @@ process after ANY processes exit, or after ALL exit (the default.)
 ! in front of a process name indicates to run if that process fails with
 bad exit status.  ^ in front of a process indicates to run if that process
 succeeds OR fails.
+
+=item status
+
+Return the exit status of this process if it has completed.  The exit
+status will only be correct if a CHLD signal handler is installed,
+otherwise it may be undef.
 
 =back
 

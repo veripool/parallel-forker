@@ -371,8 +371,11 @@ Send a signal to all running children and their subchildren.
 
 =item $self->max_proc (<number>)
 
-Specify the maximum number of processes to run at any one time.  Defaults
-to undef, which runs all possible jobs at once.
+Specify the maximum number of processes that the poll method will run at
+any one time.  Defaults to undef, which runs all possible jobs at once.
+Max_proc takes effect when you schedule processes and mark them "ready,"
+then rely on Parallel::Forker's poll method to move the processes from the
+ready state to the run state.  (You do not need to call run yourself.)
 
 =item $self->new (<parameters>)
 
@@ -398,8 +401,9 @@ prevent a warning.
 
 =item $self->poll
 
-See if any children need work, and service them.  Non-blocking; always
-returns immediately.
+See if any children need work, and service them.  Start up to max_proc
+processes that are "ready" by calling their run method.  Non-blocking;
+always returns immediately.
 
 =item $self->processes
 
@@ -440,13 +444,17 @@ automatically.
 
 =item run_on_start
 
-Subroutine reference to execute when the job begins.  Executes under the
-forked process.
+Subroutine reference to execute when the job begins, in the forked process.
+The subroutine is called with one argument, a reference to the
+Parallel::Forker::Process that is starting.
 
 =item run_on_finish
 
-Subroutine reference to execute when the job ends.  Executes on the master
-process.
+Subroutine reference to execute when the job ends, in the master process.
+The subroutine is called with two arguments, a reference to the
+Parallel::Forker::Process that is finishing, and the exit status of the
+child process.  Note the exit status will only be correct if a CHLD signal
+handler is installed.
 
 =item run_after
 
