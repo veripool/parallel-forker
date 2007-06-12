@@ -4,6 +4,8 @@ The contributors that suggested a given feature are shown in [].
 	
 * Parallel::Forker 1.22**
 
+***	Warn, but allow users to set SIG{CHLD}='IGNORE'. [Kevin Montuori]
+
 ****    Warn if use_sig_child is undefined, as need to know if on or off.
 
 ****	Report error if create or schedule a task, and the same name exists.

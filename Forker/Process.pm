@@ -77,7 +77,8 @@ sub DESTROY {
 sub name { return $_[0]->{name}; }
 sub label { return $_[0]->{label}; }
 sub pid { return $_[0]->{pid}; }
-sub status { return $_[0]->{status}; }
+sub status { return $_[0]->{status}; }   # Maybe undef
+sub status_ok { return defined $_[0]->{status} && $_[0]->{status}==0; }
 sub forkref { return $_[0]->{_forkref}; }
 sub is_idle    { return $_[0]->{_state} eq 'idle'; }
 sub is_ready   { return $_[0]->{_state} eq 'ready'; }
@@ -254,12 +255,12 @@ sub _calc_runable {
     sub _ranok {
 	my $procref = $_Calc_Runable_Fork->{_processes}{$_[0]};
 	print "   _ranok   $procref->{name}  State $procref->{_state}\n" if ($Debug||0)>=2;
-	return ($procref->is_done && $procref->{status}==0);
+	return ($procref->is_done && $procref->status_ok);
     }
     sub _ranfail {
 	my $procref = $_Calc_Runable_Fork->{_processes}{$_[0]};
 	print "   _ranfail $procref->{name}  State $procref->{_state}\n" if ($Debug||0)>=2;
-	return ($procref->is_done && $procref->{status}!=0);
+	return ($procref->is_done && !$procref->status_ok);
     }
     sub _parerr {
 	my $procref = $_Calc_Runable_Fork->{_processes}{$_[0]};
@@ -279,13 +280,22 @@ sub _calc_runable {
 
 ##### STATE TRANSITIONS
 
+our $_Warned_Waitpid;
+
 sub poll {
     my $self = shift;
     return undef if !$self->{pid};
 
     my $got = waitpid ($self->{pid}, WNOHANG);
-    if ($got>0) {
-	$self->{status} = $?;	# convert wait return to status 
+    if ($got!=0) {
+	if ($got>0) {
+	    $self->{status} = $?;	# convert wait return to status 
+	} else {
+	    $self->{status} = undef;
+	    carp "%Warning: waitpid($self->{pid}) returned -1 instead of status; perhaps you're ignoring SIG{CHLD}?"
+		if ($^W && !$_Warned_Waitpid);
+	    $_Warned_Waitpid = 1;
+	}
 	# Transition: running -> 'done'
 	print "  FrkProc $self->{name} $self->{_state} -> done ($self->{status})\n" if $Debug;
 	delete $self->{_forkref}{_running}{$self->{pid}};
@@ -340,8 +350,8 @@ sub _write_tree_line {
     my $cmt = "";
     if (!$linenum) {
 	my $state = uc $self->{_state};
-	$state .= "-ok"  if $self->is_done && !$self->{status};
-	$state .= "-err" if $self->is_done && $self->{status};
+	$state .= "-ok"  if $self->is_done && $self->status_ok;
+	$state .= "-err" if $self->is_done && !$self->status_ok;
 	return sprintf ("%s %-27s  %-8s  %s\n",
 			"--", #x$level
 			$self->{name},
@@ -513,6 +523,12 @@ succeeds OR fails.
 Return the exit status of this process if it has completed.  The exit
 status will only be correct if a CHLD signal handler is installed,
 otherwise it may be undef.
+
+=item status_ok
+
+Return true if the exit status of this process was zero.  Return false if
+not ok, or if the status has not been determined, or if the status was
+undef.
 
 =back
 
