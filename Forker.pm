@@ -448,6 +448,14 @@ Subroutine reference to execute when the job begins, in the forked process.
 The subroutine is called with one argument, a reference to the
 Parallel::Forker::Process that is starting.
 
+If your callback is going to fork, you'd be advised to have the child:
+
+	$SIG{ALRM} = 'DEFAULT';
+	$SIG{CHLD} = 'DEFAULT';
+
+This will prevent the child from inheriting the parent's handlers, and
+possibly confusing any child calls to waitpid.
+
 =item run_on_finish
 
 Subroutine reference to execute when the job ends, in the master process.
