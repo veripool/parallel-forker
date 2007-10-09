@@ -68,6 +68,11 @@ sub running {
     return (values %{$self->{_running}});
 }
 
+sub running_sorted {
+    my $self = shift;
+    return (sort {$a->{name} cmp $b->{name}} values %{$self->{_running}});
+}
+
 sub processes {
     my $self = shift;
     return (values %{$self->{_processes}});
@@ -139,10 +144,13 @@ sub poll {
     $self->{_activity} = 0;
     my $nrunning = grep { not $_->poll } (values %{$self->{_running}});
 
-    foreach my $procref (values %{$self->{_runable}}) {
-	last if ($self->{max_proc} && $nrunning >= $self->{max_proc});
-	$procref->run;
-	$nrunning++;
+    if (!($self->{max_proc} && $nrunning >= $self->{max_proc})) {
+	foreach my $procref (sort {$a->{name} cmp $b->{name}}   # Lanch in named order
+			     values %{$self->{_runable}}) {
+	    last if ($self->{max_proc} && $nrunning >= $self->{max_proc});
+	    $procref->run;
+	    $nrunning++;
+	}
     }
     # If no one's running, we need _activity set to check for runable -> running
     # transitions during the next call to poll().
@@ -159,7 +167,7 @@ sub ready_all {
 sub kill_all {
     my $self = shift;
     my $signal = shift || 9;
-    foreach my $procref (values %{$self->{_running}}) {
+    foreach my $procref ($self->running_sorted) {
 	$procref->kill($signal);
     };
 }
@@ -167,7 +175,7 @@ sub kill_all {
 sub kill_tree_all {
     my $self = shift;
     my $signal = shift || 9;
-    foreach my $procref (values %{$self->{_running}}) {
+    foreach my $procref ($self->running_sorted) {
 	$procref->kill_tree($signal);
     };
 }
