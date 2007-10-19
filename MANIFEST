@@ -3,6 +3,7 @@ Forker.pm
 Forker/Process.pm
 Makefile.PL
 MANIFEST			This list of files
+MANIFEST.SKIP
 META.yml			Module meta-data (added by MakeMaker)
 README
 readme.texi

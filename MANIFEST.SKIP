@@ -7,7 +7,6 @@ test_store$
 \.old/
 \.(bak|old)$
 \bMakefile$
-^MANIFEST.SKIP$
 \.wpsin$
 \.tar\.
 \bblib\b
