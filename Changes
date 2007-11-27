@@ -4,7 +4,7 @@ The contributors that suggested a given feature are shown in [].
 	
 * Parallel::Forker 1.22* 2007/****
 
-***	Run processes in sorted rather then hash order. [Bryce Denney]
+***	Run processes in sorted rather than hash order. [Bryce Denney]
 
 * Parallel::Forker 1.221 2007/6/12
 

@@ -387,7 +387,7 @@ ready state to the run state.  (You do not need to call run yourself.)
 
 =item $self->new (<parameters>)
 
-Create a new manager object.  There may be more then one manager in any
+Create a new manager object.  There may be more than one manager in any
 application, but applications taking advantage of the sig_child handler
 should call every manager's C<sig_child> method in the application's
 C<SIGCHLD> handler.
