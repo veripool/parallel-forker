@@ -1,3 +1,4 @@
+.cvsignore
 Changes
 Forker.pm
 Forker/Process.pm

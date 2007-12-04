@@ -1,6 +1,5 @@
 ^CVS/
 /CVS/
-.cvsignore$
 pm_to_blib$
 test_store$
 ,v$
