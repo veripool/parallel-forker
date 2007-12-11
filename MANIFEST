@@ -1,11 +1,11 @@
 .cvsignore
 Changes
-Forker.pm
-Forker/Process.pm
+lib/Parallel/Forker.pm
+lib/Parallel/Forker/Process.pm
 Makefile.PL
 MANIFEST			This list of files
 MANIFEST.SKIP
-META.yml			Module meta-data (added by MakeMaker)
+META.yml
 README
 readme.texi
 t/00_pod.t

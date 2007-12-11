@@ -41,7 +41,7 @@ clean::
 }
 
 WriteMakefile(
-	      VERSION_FROM => 'Forker.pm',
+	      VERSION_FROM => 'lib/Parallel/Forker.pm',
 	      DISTNAME  => 'Parallel-Forker',
 	      NAME      => 'Parallel::Forker',
 	      AUTHOR	=> 'Wilson Snyder <wsnyder@wsnyder.org>',

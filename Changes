@@ -6,6 +6,8 @@ The contributors that suggested a given feature are shown in [].
 
 ***	Run processes in sorted rather than hash order. [Bryce Denney]
 
+****	Reorganize kit to use lib directory, for easier standalone use.
+
 * Parallel::Forker 1.221 2007/6/12
 
 ***	Warn, but allow users to set SIG{CHLD}='IGNORE'. [Kevin Montuori]
