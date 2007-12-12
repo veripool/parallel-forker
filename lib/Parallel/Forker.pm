@@ -139,7 +139,7 @@ sub poll {
     # We don't have a loop around this any more, as we want to allow
     # applications to do other work.  We'd also need to be careful not to
     # set _activity with no one runnable, as it would potentially cause a
-    # inifinite loop.
+    # infinite loop.
 
     $self->{_activity} = 0;
     my $nrunning = grep { not $_->poll } (values %{$self->{_running}});
