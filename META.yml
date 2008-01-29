@@ -2,7 +2,7 @@
 #XXXXXXX This is a prototype!!!  It will change in the future!!! XXXXX#
 name:         Parallel-Forker
 version:      1.222
-version_from: Forker.pm
+version_from: lib/Parallel/Forker.pm
 installdirs:  site
 requires:
     Proc::ProcessTable:            0.4
