@@ -53,7 +53,7 @@ See the Parallel::Forker manpage for a detailed description of this package.
 @section Obtaining Distribution
 
 The latest version is available at @uref{http://www.perl.org/CPAN/},
-and from @uref{http://www.veripool.com/}.
+and from @uref{http://www.veripool.org/}.
 
 @node Supported Systems, Installation, Obtaining Distribution, Top
 @section Supported Systems

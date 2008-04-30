@@ -535,7 +535,7 @@ undef.
 =head1 DISTRIBUTION
 
 The latest version is available from CPAN and from
-L<http://www.veripool.com/>.
+L<http://www.veripool.org/>.
 
 Copyright 2002-2008 by Wilson Snyder.  This package is free software; you
 can redistribute it and/or modify it under the terms of either the GNU
