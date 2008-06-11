@@ -1,4 +1,4 @@
-.cvsignore
+.gitignore
 Changes
 lib/Parallel/Forker.pm
 lib/Parallel/Forker/Process.pm
