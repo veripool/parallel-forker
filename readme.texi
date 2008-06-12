@@ -15,12 +15,12 @@
 This is the Parallel::Forker Package.
 
 @menu
-* Copyright::                   
-* Summary::                     
-* Description::                 
-* Obtaining Distribution::      
-* Supported Systems::           
-* Installation::                
+* Copyright::
+* Summary::
+* Description::
+* Obtaining Distribution::
+* Supported Systems::
+* Installation::
 @end menu
 
 @node Copyright, Summary, Top, Top

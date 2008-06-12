@@ -211,7 +211,7 @@ sub run_a_test {
 {
     # sanity-check precondition:
     ok( $fork->use_sig_child );
-  
+
     my $done;
     $fork->schedule(
 		    name => 'f1',

@@ -7,12 +7,12 @@
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of either the GNU General Public License or the
 # Perl Artistic License.
-# 
+#
 # This program is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU General Public License for more details.
-# 
+#
 ######################################################################
 
 package Parallel::Forker::Process;
@@ -289,7 +289,7 @@ sub poll {
     my $got = waitpid ($self->{pid}, WNOHANG);
     if ($got!=0) {
 	if ($got>0) {
-	    $self->{status} = $?;	# convert wait return to status 
+	    $self->{status} = $?;	# convert wait return to status
 	} else {
 	    $self->{status} = undef;
 	    carp "%Warning: waitpid($self->{pid}) returned -1 instead of status; perhaps you're ignoring SIG{CHLD}?"
@@ -385,7 +385,7 @@ sub _subprocesses {
     # All pids under the given parent
     # Used by testing module
     # Same function in Schedule::Load::_subprocesses
-    my $pt = new Proc::ProcessTable( 'cache_ttys' => 1); 
+    my $pt = new Proc::ProcessTable( 'cache_ttys' => 1);
     my %parent_pids;
     foreach my $p (@{$pt->table}) {
 	$parent_pids{$p->pid} = $p->ppid;
@@ -504,7 +504,7 @@ Mark this process as being ready for execution when all C<run_after>'s are
 ready and CPU resources permit.  When that occurs, run will be called on
 the process automatically.
 
-=item run 
+=item run
 
 Unconditionally move the process to the "running" state and start it.
 

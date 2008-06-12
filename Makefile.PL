@@ -24,7 +24,7 @@ tag:
 	svnorcvs tag  \$(DISTNAME)_\$(VERSION_SYM)
 
 maintainer-diff:
-	svnorcvs diff \$(DISTNAME)_\$(VERSION_SYM) 
+	svnorcvs diff \$(DISTNAME)_\$(VERSION_SYM)
 
 maintainer-dist: preexist dist tag
 	svnorcvs release \$(DISTVNAME).tar.gz
@@ -49,7 +49,7 @@ WriteMakefile(
 			    'Proc::ProcessTable' => 0.40,
 			},
 	      'dist'    => {COMPRESS => 'gzip -9f',
-			    SUFFIX   => '.gz', 
+			    SUFFIX   => '.gz',
 			    DIST_DEFAULT => 'README all tardist',
 			},
 	      );

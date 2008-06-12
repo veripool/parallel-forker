@@ -122,7 +122,7 @@ sub a_test {
       return join('', map { $_->name }
         grep { $_->$method } $fork->processes_sorted);
     }
-    
+
     if ($failit) {
       ok( names_are($fork, 'is_parerr'), 'bg' );
       ok( names_are($fork, 'is_done'), 'acdee2fh' );

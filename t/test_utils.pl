@@ -6,6 +6,7 @@
 # Lesser General Public License or the Perl Artistic License.
 ######################################################################
 
+use IO::File;
 use vars qw($PERL $GCC);
 
 $PERL = "$^X -Iblib/arch -Iblib/lib";
@@ -26,6 +27,14 @@ sub run_system {
     system "$command";
     my $status = $?;
     ($status == 0) or die "%Error: Command Failed $command, $status, stopped";
+}
+
+sub wholefile {
+    my $file = shift;
+    my $fh = IO::File->new ($file) or die "%Error: $! $file";
+    my $wholefile = join('',$fh->getlines());
+    $fh->close();
+    return $wholefile;
 }
 
 1;
