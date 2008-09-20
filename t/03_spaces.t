@@ -22,7 +22,9 @@ foreach my $filename (keys %{$manifest}) {
 	&& $wholefile !~ /^[ \t]*[ ]+\t/) {
 	ok(1);
     } elsif ($filename =~ m!NONE_NEEDED!) {
-	skip(1,"File doesn't need check; harmless");
+	skip("File doesn't need check (harmless)");
+    } elsif (!$ENV{VERILATOR_AUTHOR_SITE}) {
+	skip("author only test (harmless)",1);
     } else {
 	warn "%Error: $filename: Bad indentation\n";
 	ok(0);
