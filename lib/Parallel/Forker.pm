@@ -18,7 +18,6 @@
 package Parallel::Forker;
 require 5.006;
 use Time::HiRes qw (usleep);
-use Proc::ProcessTable;
 use IO::File;
 
 use Parallel::Forker::Process;
