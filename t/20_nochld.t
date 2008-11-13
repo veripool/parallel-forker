@@ -27,7 +27,7 @@ ok(1);
 
 # Not required in old versions, so make sure we still work
 #$SIG{CHLD} = sub { Parallel::Forker::sig_child($fork); };  # Not method, as is less stuff for a handler to do
-$SIG{TERM} = sub { $fork->kill_tree_all('TERM') if $fork; die "Quitting...\n"; };
+$SIG{TERM} = sub { $fork->kill_tree_all('TERM') if $fork && $fork->in_parent; die "Quitting...\n"; };
 ok(1);
 
 my $p1 = $fork->schedule(label=>'p1',

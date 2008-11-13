@@ -11,7 +11,7 @@ use Test;
 use strict;
 use Time::HiRes qw (gettimeofday usleep tv_interval sleep time);
 
-BEGIN { plan tests => 49 }
+BEGIN { plan tests => 50 }
 BEGIN { require "t/test_utils.pl"; }
 
 BEGIN { $Parallel::Forker::Debug = 1; }
@@ -23,9 +23,10 @@ ok(1);
 
 my $fork = new Parallel::Forker;
 ok(1);
+ok($fork->in_parent);
 
 $SIG{CHLD} = sub { Parallel::Forker::sig_child($fork); };  # Not method, as is less stuff for a handler to do
-$SIG{TERM} = sub { $fork->kill_tree_all('TERM') if $fork; die "Quitting...\n"; };
+$SIG{TERM} = sub { $fork->kill_tree_all('TERM') if $fork && $fork->in_parent; die "Quitting...\n"; };
 $fork->use_sig_child(1);
 ok(1);
 

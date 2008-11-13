@@ -227,7 +227,6 @@ sub run {
 	$self->{_forkref}{_running}{$self->{pid}} = $self;
 	delete $self->{_forkref}{_runable}{$self->{name}};
     } else {
-	$self->{_forkref}{_in_child} = 1;
 	$self->{run_on_start}->($self);
 	exit(0);	# Don't close anything
     }

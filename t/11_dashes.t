@@ -31,7 +31,7 @@ sub a_test {
 
     my $fork = new Parallel::Forker (use_sig_child=>1);
     $SIG{CHLD} = sub { Parallel::Forker::sig_child($fork); };
-    $SIG{TERM} = sub { $fork->kill_tree_all('TERM') if $fork; die "Quitting...\n"; };
+    $SIG{TERM} = sub { $fork->kill_tree_all('TERM') if $fork && $fork->in_parent; die "Quitting...\n"; };
     ok(1);
 
     # Test use of -'s in run_afters
@@ -145,7 +145,7 @@ sub a_test {
 {
   my $fork = new Parallel::Forker (use_sig_child=>1);
   $SIG{CHLD} = sub { Parallel::Forker::sig_child($fork); };
-  $SIG{TERM} = sub { $fork->kill_tree_all('TERM') if $fork; die "Quitting...\n"; };
+  $SIG{TERM} = sub { $fork->kill_tree_all('TERM') if $fork && $fork->in_parent; die "Quitting...\n"; };
 
   my @done_order;
   sub done { push @done_order, $_[0]->name }

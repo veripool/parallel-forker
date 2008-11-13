@@ -38,8 +38,8 @@ sub new {
 	_labels => {},		# List of process objects, keyed by label
 	_runable => {},		# Process objects runable now, keyed by id
 	_running => {},		# Process objects running now, keyed *PID*
-	_in_child => 0,		# In a child process, don't allow forking
 	_run_after_eqn => undef,# Equation to eval to determine if ready to launch
+	_parent_pid => $$,	# PID of initial process creating the forker
 	max_proc => undef,	# Number processes to launch, <1=any, +=that number
 	use_sig_child => undef,	# Default to not using SIGCHLD handler
 	@_
@@ -49,6 +49,11 @@ sub new {
 }
 
 #### ACCESSORS
+
+sub in_parent {
+    my $self = shift;
+    return $self->{_parent_pid}==$$;
+}
 
 sub max_proc {
     my $self = shift;
@@ -305,7 +310,7 @@ Parallel::Forker - Parallel job forking and management
    use Parallel::Forker;
    $Fork = new Parallel::Forker (use_sig_child=>1);
    $SIG{CHLD} = sub { Parallel::Forker::sig_child($Fork); };
-   $SIG{TERM} = sub { $Fork->kill_tree_all('TERM') if $Fork; die "Quitting...\n"; };
+   $SIG{TERM} = sub { $Fork->kill_tree_all('TERM') if $Fork && $Fork->in_parent; die "Quitting...\n"; };
 
    $Fork->schedule
       (run_on_start => sub {print "child work here...";},
@@ -364,13 +369,20 @@ Returns one or more Parallel::Forker::Process objects for the given name (one
 object returned) or label (one or more objects returned).  Returns undef if no
 processes are found.
 
+=item $self->in_parent
+
+Return true if and only if called from the parent process (the one that
+created the Forker object).
+
 =item $self->is_any_left
 
 Return true if any processes are running, or runnable (need to run).
 
 =item $self->kill_all (<signal>)
 
-Send a signal to all running children.
+Send a signal to all running children.  You probably want to call this only
+from the parent process that created the Parallel::Forker object, wrap the
+call in "if ($self->in_parent)."
 
 =item $self->kill_tree_all (<signal>)
 
