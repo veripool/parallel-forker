@@ -2,7 +2,7 @@ Revision history for Perl extension Parallel::Forker
 
 The contributors that suggested a given feature are shown in [].
 
-* Parallel::Forker 1.22****
+* Parallel::Forker 1.223 2008/11/14
 
 ***	Add in_parent method and recommend usage, rt40886. [Ton Voon]
 

@@ -1,7 +1,7 @@
 # http://module-build.sourceforge.net/META-spec.html
 #XXXXXXX This is a prototype!!!  It will change in the future!!! XXXXX#
 name:         Parallel-Forker
-version:      1.222
+version:      1.223
 version_from: lib/Parallel/Forker.pm
 installdirs:  site
 requires:
