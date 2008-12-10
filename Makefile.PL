@@ -11,32 +11,32 @@ use ExtUtils::MakeMaker;
 use Carp;
 
 sub MY::postamble {
-"
+    q{
 README: readme.texi
-	-rm -rf \$@
-	makeinfo \$< --output \$@ --no-headers --no-validate
+	-$(RM_RF) $@
+	makeinfo $< --output $@ --no-headers --no-validate
 
 preexist:
-	svnorcvs nexists \$(DISTNAME)_\$(VERSION_SYM)
+	svnorcvs nexists $(DISTNAME)_$(VERSION_SYM)
 	test -s README
 
 tag:
-	svnorcvs tag  \$(DISTNAME)_\$(VERSION_SYM)
+	svnorcvs tag  $(DISTNAME)_$(VERSION_SYM)
 
 maintainer-diff:
-	svnorcvs diff \$(DISTNAME)_\$(VERSION_SYM)
+	svnorcvs diff $(DISTNAME)_$(VERSION_SYM)
 
 maintainer-dist: preexist dist tag
-	svnorcvs release \$(DISTVNAME).tar.gz
+	svnorcvs release $(DISTVNAME).tar.gz
 
 maintainer-clean: distclean
-	-rm -rf README vtrace
+	-$(RM_RF) README vtrace
 
 maintainer-copy: README
 
 clean::
-	-rm -rf test_dir
-";
+	-$(RM_RF) test_dir
+};
 }
 
 WriteMakefile(
