@@ -6,3 +6,5 @@ README
 *.bs
 *.old
 *.bak
+.svn
+.git
