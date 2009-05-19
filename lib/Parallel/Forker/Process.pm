@@ -12,7 +12,7 @@ use Carp;
 use POSIX qw(sys_wait_h :signal_h);
 use vars qw($Debug $VERSION $HashId);
 
-$VERSION = '1.223';
+$VERSION = '1.224';
 
 $Debug = $Parallel::Forker::Debug;
 $HashId = 0;

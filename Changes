@@ -2,9 +2,11 @@ Revision history for Perl extension Parallel::Forker
 
 The contributors that suggested a given feature are shown in [].
 
-* Parallel::Forker 1.***
+* Parallel::Forker 1.224 2009/05/19
 
 **	This package is now licensed under LGPL v3 and/or Artistic v2.0.
+
+****	Fix ignore files to support GIT.
 
 * Parallel::Forker 1.223 2008/11/14
 
