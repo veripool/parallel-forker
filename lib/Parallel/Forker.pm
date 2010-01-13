@@ -380,7 +380,8 @@ Specify the maximum number of processes that the poll method will run at
 any one time.  Defaults to undef, which runs all possible jobs at once.
 Max_proc takes effect when you schedule processes and mark them "ready,"
 then rely on Parallel::Forker's poll method to move the processes from the
-ready state to the run state.  (You do not need to call run yourself.)
+ready state to the run state.  (You should not call ->run yourself, as this
+starts a new process immediately, ignoring max_proc.)
 
 =item $self->new (<parameters>)
 
