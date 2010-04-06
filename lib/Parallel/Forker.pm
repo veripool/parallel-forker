@@ -440,7 +440,7 @@ follows:
 
 Optional name to use in C<run_after> commands.  Unlike C<name>, this may be
 reused, in which case C<run_after> will wait on all commands with the given
-label.
+label.  Labels must contain only [a-zA-Z0-9_].
 
 =item name
 
