@@ -3,13 +3,12 @@
 
 package Parallel::Forker::Process;
 require 5.006;
-use Time::HiRes qw (usleep);
-use Proc::ProcessTable;
+use Carp qw(carp croak confess);
 use IO::File;
+use POSIX qw(sys_wait_h :signal_h);
+use Proc::ProcessTable;
 
 use strict;
-use Carp;
-use POSIX qw(sys_wait_h :signal_h);
 use vars qw($Debug $VERSION $HashId);
 
 $VERSION = '1.225';

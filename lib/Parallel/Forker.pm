@@ -3,12 +3,12 @@
 
 package Parallel::Forker;
 require 5.006;
-use Time::HiRes qw (usleep);
+use Carp qw(carp croak confess);
 use IO::File;
+use Time::HiRes qw(usleep);
 
 use Parallel::Forker::Process;
 use strict;
-use Carp;
 use vars qw($Debug $VERSION);
 
 $VERSION = '1.225';

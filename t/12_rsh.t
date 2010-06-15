@@ -9,7 +9,7 @@
 use Test;
 use strict;
 
-our $Other_Host = "ws102";
+our $Other_Host = "localhost";
 
 BEGIN { plan tests => 3 }
 BEGIN { require "t/test_utils.pl"; }
@@ -32,7 +32,7 @@ sub a_test {
     $SIG{ALRM} = sub { print "Timeout!\n"; ok(0); $fork->kill_tree_all('TERM') if $fork && $fork->in_parent; die "Timeout...\n"; };
     ok(1);
 
-    warn "-Note: It's ok if you get 'No route to host' below.\n";
+    warn "-Note: It's ok if you get 'No route to host' or 'Connection refused' below.\n";
     for (my $i=0; $i<3; $i++) {
 	$fork->schedule(
 			run_on_start => sub {
