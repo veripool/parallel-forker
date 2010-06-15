@@ -36,4 +36,14 @@ sub wholefile {
     return $wholefile;
 }
 
+sub get_memory_usage {
+    # Return memory usage.  Return 0 if the system doesn't look quite right.
+    my $fh = IO::File->new("</proc/self/statm");
+    return 0 if !$fh;
+
+    my $stat = $fh->getline || "";
+    my @stats = split /\s+/, $stat;
+    return ($stats[0]||0)*4096;  # vmsize
+}
+
 1;

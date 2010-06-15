@@ -11,6 +11,7 @@ resources:
     homepage: http://www.veripool.org
 requires:
     Proc::ProcessTable:            0.4
+    Scalar::Util:		   0
     Time::HiRes:                   0
 
 meta-spec:

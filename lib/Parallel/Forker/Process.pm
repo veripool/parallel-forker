@@ -7,6 +7,7 @@ use Carp qw(carp croak confess);
 use IO::File;
 use POSIX qw(sys_wait_h :signal_h);
 use Proc::ProcessTable;
+use Scalar::Util qw(weaken);
 
 use strict;
 use vars qw($Debug $VERSION $HashId);
@@ -39,6 +40,8 @@ sub _new {
     (!exists $self->{_forkref}{_processes}{$self->{name}})
 	or croak "%Error: Creating a new process under the same name as an existing process: $self->{name},";
     $self->{_forkref}{_processes}{$self->{name}} = $self;
+    weaken($self->{_forkref});
+
     if (defined $self->{label}) {
 	if (ref $self->{label}) {
 	    foreach my $label (@{$self->{label}}) {
@@ -135,8 +138,12 @@ sub _calc_eqns {
 			$runable_eqn .= " (_ranok('$aftname'))";
 			$parerr_eqn  .= " (_ranfail('$aftname')||_parerr('$aftname'))";
 		    }
+
 		    $aftref->{_after_children}{$self->{name}} = $self;
 		    $self->{_after_parents}{$aftref->{name}} = $aftref;
+		    weaken($aftref->{_after_children}{$self->{name}});
+		    weaken($self->{_after_parents}{$aftref->{name}});
+
 		    my $apo = $flip_op; $apo ||= 'O' if $between_op eq '||';
 		    $apo ||= '&';  $apo='E' if $apo eq '!';
 		    $self->{_after_parents_op}{$aftref->{name}} = $apo;

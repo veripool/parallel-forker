@@ -16,4 +16,5 @@ t/11_dashes.t
 t/12_rsh.t
 t/13_jobs.t
 t/20_nochld.t
+t/24_leak.t
 t/test_utils.pl
