@@ -4,9 +4,11 @@ The contributors that suggested a given feature are shown in [].
 
 * Parallel::Forker 1.22**
 
-***	Fix memory leak.  [by Muir Manders]
+**	Add reap_processes and reap to reclaim memory. [by Muir Manders]
 
-****	Fix Pod::Usage dependency, rt51024.  [Andreas Koenig]
+***	Fix memory leak. [by Muir Manders]
+
+****	Fix Pod::Usage dependency, rt51024. [Andreas Koenig]
 
 * Parallel::Forker 1.225 2010/01/12
 

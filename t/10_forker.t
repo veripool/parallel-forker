@@ -10,7 +10,7 @@ use Test;
 use strict;
 use Time::HiRes qw (gettimeofday usleep tv_interval sleep time);
 
-BEGIN { plan tests => 50 }
+BEGIN { plan tests => 99 }
 BEGIN { require "t/test_utils.pl"; }
 
 BEGIN { $Parallel::Forker::Debug = 1; }
@@ -241,4 +241,111 @@ sub run_a_test {
 
     ok( scalar(grep { $_->is_running } $fork->processes), 0 );
     ok( $done, 1 );
+}
+
+# Can reap "done" processes
+{
+  my $name1 = 'ONE';
+  my $job1 = $fork->schedule(
+    name => $name1,
+    run_on_start => sub { sleep 1 },
+    label => [qw(foo bar)],
+  );
+
+  my $name2 = 'TWO';
+  my $job2 = $fork->schedule(
+    name => $name2,
+    run_after => [$name1],
+    run_on_start => sub { sleep 1 },
+    label => 'bar',
+  );
+
+  my $name3 = 'THREE';
+  my $job3 = $fork->schedule(
+    name => $name3,
+    run_after => [$name2],
+    run_on_start => sub { sleep 1 },
+  );
+
+  my $name4 = 'FOUR';
+  my $job4 = $fork->schedule(
+    name => $name4,
+    run_after => ["!$name3"],
+    run_on_start => sub { sleep 1 },
+  );
+
+  # nothing has happened... don't reap anything
+  ok( not $job1->is_reapable );
+  ok( not $job2->is_reapable );
+  ok( not $job3->is_reapable );
+  my %reaped = map { $_->{name} => 1 } $fork->reap_processes;
+  ok( not $reaped{$name1} );
+  ok( not $reaped{$name2} );
+  ok( not $reaped{$name3} );
+
+  # still hasn't run anything
+  $fork->ready_all;
+  ok( not $job1->is_reapable );
+  ok( not $job2->is_reapable );
+  ok( not $job3->is_reapable );
+  %reaped = map { $_->{name} => 1 } $fork->reap_processes;
+  ok( not $reaped{$name1} );
+  ok( not $reaped{$name2} );
+  ok( not $reaped{$name3} );
+
+  $fork->poll;
+  ok( $job1->is_running );
+  ok( not $job2->is_done );
+  ok( not $job3->is_done );
+
+  # first job finishes, still can't reap because job2 is still running
+  restarting_sleep(1.5);
+  $fork->poll;
+  ok( $job1->is_done );
+  ok( $job2->is_running );
+  ok( not $job3->is_done );
+  ok( not $job1->is_reapable );
+  ok( not $job2->is_reapable );
+  ok( not $job3->is_reapable );
+  %reaped = map { $_->{name} => 1 } $fork->reap_processes;
+  ok( not $reaped{$name1} );
+  ok( not $reaped{$name2} );
+  ok( not $reaped{$name3} );
+
+  # job 2 finishes so no one is left referencing job1, reap it!
+  restarting_sleep(1.5);
+  $fork->poll;
+  ok( $job1->is_done );
+  ok( $job2->is_done );
+  ok( $job3->is_running );
+  ok( $job1->is_reapable );
+  ok( not $job2->is_reapable );
+  ok( not $job3->is_reapable );
+  %reaped = map { $_->{name} => 1 } $fork->reap_processes;
+  ok( $reaped{$name1} );
+  # labels got cleaned up also
+  ok( not $fork->find_proc_name('foo') );
+  ok( ! grep { $_->{name} eq $name1 } $fork->find_proc_name('bar') );
+  ok( grep { $_->{name} eq $name2 } $fork->find_proc_name('bar') );
+  ok( not $reaped{$name2} );
+  ok( not $reaped{$name3} );
+  ok( ! grep { $_->{name} eq $name1 } $fork->processes );
+
+  restarting_sleep(1.5);
+  $fork->poll;
+  ok( $job1->is_done );
+  ok( $job2->is_done );
+  ok( $job3->is_done );
+  ok( $job4->is_parerr );
+  ok( $job2->is_reapable );
+  ok( $job3->is_reapable );
+  ok( $job4->is_reapable );
+  %reaped = map { $_->{name} => 1 } $fork->reap_processes;
+  ok( $reaped{$name2} );
+  ok( $reaped{$name3} );
+  # job4 can't run because his run_after condition fails. be sure
+  # to clean him up also
+  ok( $reaped{$name4} );
+  ok( not $fork->find_proc_name('foo') );
+  ok( not $fork->find_proc_name('bar') );
 }

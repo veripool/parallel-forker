@@ -96,6 +96,18 @@ sub wait_all {
     };
 }
 
+sub reap_processes {
+    my $self = shift;
+
+    my @reaped;
+    foreach my $process ($self->processes) {
+	next unless $process->is_reapable;
+	$process->reap;
+ 	push @reaped, $process;
+    }
+    return @reaped;
+}
+
 sub is_any_left {
     my $self = shift;
     return 1 if ( (keys %{$self->{_runable}}) > 0 );
@@ -422,6 +434,13 @@ Return Parallel::Forker::Process objects for all processes, sorted by name.
 =item $self->ready_all
 
 Mark all processes as ready for scheduling.
+
+=item $self->reap_processes
+
+Reap all processes which have no other processes waiting for them, and the
+process is is_done or is_parerr.  Returns list of processes reaped.  This
+reclaims memory for when a large number of processes are being created,
+run, and destroyed.
 
 =item $self->running
 
