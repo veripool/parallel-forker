@@ -2,6 +2,10 @@ Revision history for Perl extension Parallel::Forker
 
 The contributors that suggested a given feature are shown in [].
 
+* Parallel::Forker 1.230 2010/07/01
+
+****	Fix rsh test failure.
+
 * Parallel::Forker 1.230 2010/06/16
 
 **	Add reap_processes and reap to reclaim memory. [by Muir Manders]
