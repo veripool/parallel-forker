@@ -1,6 +1,6 @@
 --- #YAML:1.0
 name:         Parallel-Forker
-version:      1.230
+version:      1.231
 version_from: lib/Parallel/Forker.pm
 abstract:     Parallel job forking and management, with expression based control
 installdirs:  site

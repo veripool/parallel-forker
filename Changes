@@ -2,7 +2,7 @@ Revision history for Perl extension Parallel::Forker
 
 The contributors that suggested a given feature are shown in [].
 
-* Parallel::Forker 1.230 2010/07/01
+* Parallel::Forker 1.231 2010/07/01
 
 ****	Fix rsh test failure.
 
