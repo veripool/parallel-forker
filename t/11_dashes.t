@@ -6,7 +6,7 @@
 # Lesser General Public License Version 3 or the Perl Artistic License Version 2.0.
 ######################################################################
 
-use Test;
+use Test::More;
 use strict;
 
 BEGIN { plan tests => 12 }
@@ -15,7 +15,7 @@ BEGIN { require "t/test_utils.pl"; }
 BEGIN { $Parallel::Forker::Debug = 1; }
 
 use Parallel::Forker;
-ok(1);
+ok(1, "use");
 
 ######################################################################
 
@@ -31,7 +31,7 @@ sub a_test {
     my $fork = new Parallel::Forker (use_sig_child=>1);
     $SIG{CHLD} = sub { Parallel::Forker::sig_child($fork); };
     $SIG{TERM} = sub { $fork->kill_tree_all('TERM') if $fork && $fork->in_parent; die "Quitting...\n"; };
-    ok(1);
+    ok(1, "sig");
 
     # Test use of -'s in run_afters
     %Didit = ();
@@ -173,9 +173,7 @@ sub a_test {
   $fork->ready_all;
   $fork->wait_all;
 
-  ok(
-    "@done_order" eq "a b c d e f"
-    ||
-    "@done_order" eq "a b d c e f"
-  );
+  ok(("@done_order" eq "a b c d e f"
+      || "@done_order" eq "a b d c e f"),
+     "done_order");
 }

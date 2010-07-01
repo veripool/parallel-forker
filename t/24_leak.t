@@ -6,7 +6,7 @@
 # Lesser General Public License Version 3 or the Perl Artistic License Version 2.0.
 
 use strict;
-use Test;
+use Test::More;
 BEGIN { eval "use Devel::Leak;"; }  # Optional
 BEGIN { eval "use Data::Dumper;"; $Data::Dumper::Indent=1; }  # Optional
 
@@ -39,19 +39,23 @@ for (my $i=0; $i<$loops; $i++) {
 
     $mem = $newmem;
 }
-ok(1);
-if ($mem == 0) {
-    skip("get_memory_usage isn't supported",1);
-} elsif ($mem_end <= $mem_mid) {
-    ok(1);
-} else {
-    warn "%Warning: Leaked ",int(($mem_end-$mem_mid)/($loops/2))," bytes per subtest\n";
-    if (!$ENV{VERILATOR_AUTHOR_SITE} || $ENV{HARNESS_FAST}) {
-	# It's somewhat sensitive unless there's a lot of loops,
-	# and lots of loops is too slow for users to deal with.
-	skip("leaked, but author only test",1);
+ok(1, "init");
+
+SKIP: {
+    if ($mem == 0) {
+	skip("get_memory_usage isn't supported",1);
+    }
+    elsif ($mem_end <= $mem_mid) {
+	ok(1,"leaks");
     } else {
-	ok(0);
+	warn "%Warning: Leaked ",int(($mem_end-$mem_mid)/($loops/2))," bytes per subtest\n";
+	if (!$ENV{VERILATOR_AUTHOR_SITE} || $ENV{HARNESS_FAST}) {
+	    # It's somewhat sensitive unless there's a lot of loops,
+	    # and lots of loops is too slow for users to deal with.
+	    skip("leaked, but author only test",1);
+	} else {
+	    ok(0,"leaks");
+	}
     }
 }
 

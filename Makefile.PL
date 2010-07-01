@@ -46,6 +46,7 @@ WriteMakefile(
 	      ABSTRACT  => 'Parallel job forking and management, with expression based control',
 	      PREREQ_PM => {'Proc::ProcessTable' => 0.40,
 			    'Scalar::Util' => 0,
+			    'Test::More' => 0,
 			    'Time::HiRes' => 0,
 			},
 	      'dist'    => {COMPRESS => 'gzip -9f',

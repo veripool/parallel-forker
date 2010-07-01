@@ -6,6 +6,8 @@ The contributors that suggested a given feature are shown in [].
 
 ****	Fix rsh test failure.
 
+****	Use Test::More to simplify test failure debugging.
+
 * Parallel::Forker 1.230 2010/06/16
 
 **	Add reap_processes and reap to reclaim memory. [by Muir Manders]

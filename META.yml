@@ -12,6 +12,7 @@ resources:
 requires:
     Proc::ProcessTable:            0.4
     Scalar::Util:		   0
+    Test::More:                    0
     Time::HiRes:                   0
 
 meta-spec:

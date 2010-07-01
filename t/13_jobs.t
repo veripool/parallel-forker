@@ -6,7 +6,7 @@
 # Lesser General Public License Version 3 or the Perl Artistic License Version 2.0.
 ######################################################################
 
-use Test;
+use Test::More;
 use strict;
 
 BEGIN { plan tests => 4 }
@@ -15,7 +15,7 @@ BEGIN { require "t/test_utils.pl"; }
 BEGIN { $Parallel::Forker::Debug = 1; }
 
 use Parallel::Forker;
-ok(1);
+ok(1, "use");
 
 ######################################################################
 
@@ -27,7 +27,7 @@ sub a_test {
 
     $SIG{CHLD} = sub { Parallel::Forker::sig_child($fork); };
     $SIG{TERM} = sub { ok(0); $fork->kill_tree_all('TERM') if $fork && $fork->in_parent; die "Quitting...\n"; };
-    ok(1);
+    ok(1, "sig");
 
     my $Max_Running=0;
     for (my $i=0; $i<8; $i++) {
@@ -48,7 +48,7 @@ sub a_test {
     # Run them
     $fork->ready_all();
     $fork->wait_all();
-    ok(1);
+    ok(1, "ready");
     print "Maximum jobs = $Max_Running\n";
-    ok($Max_Running==$fork->{max_proc});
+    is($Max_Running, $fork->{max_proc}, "max_proc");
 }

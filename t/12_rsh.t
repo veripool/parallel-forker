@@ -6,7 +6,7 @@
 # Lesser General Public License Version 3 or the Perl Artistic License Version 2.0.
 ######################################################################
 
-use Test;
+use Test::More;
 use strict;
 
 our $Other_Host = "localhost";
@@ -17,7 +17,7 @@ BEGIN { require "t/test_utils.pl"; }
 BEGIN { $Parallel::Forker::Debug = 1; }
 
 use Parallel::Forker;
-ok(1);
+ok(1, "use");
 
 ######################################################################
 
@@ -30,9 +30,10 @@ sub a_test {
     $SIG{CHLD} = sub { Parallel::Forker::sig_child($fork); };
     $SIG{TERM} = sub { ok(0); $fork->kill_tree_all('TERM') if $fork && $fork->in_parent; die "Quitting...\n"; };
     $SIG{ALRM} = sub { print "Timeout!\n"; ok(0); $fork->kill_tree_all('TERM') if $fork && $fork->in_parent; die "Timeout...\n"; };
-    ok(1);
+    ok(1, "sig");
 
-    warn "-Note: It's ok if you get 'No route to host' or 'Connection refused' below.\n";
+    # We don't call ssh, fails too many CPAN testers
+    #warn "-Note: It's ok if you get 'No route to host' or 'Connection refused' below.\n";
     for (my $i=0; $i<3; $i++) {
 	$fork->schedule(
 			run_on_start => sub {
@@ -56,5 +57,5 @@ sub a_test {
     alarm(60);
     $fork->ready_all();
     $fork->wait_all();
-    ok(1);
+    ok(1, "wait");
 }
