@@ -69,6 +69,8 @@ sub pid { return $_[0]->{pid}; }
 sub status { return $_[0]->{status}; }   # Maybe undef
 sub status_ok { return defined $_[0]->{status} && $_[0]->{status}==0; }
 sub forkref { return $_[0]->{_forkref}; }
+
+sub state { return $_[0]->{_state}; }
 sub is_idle    { return $_[0]->{_state} eq 'idle'; }
 sub is_ready   { return $_[0]->{_state} eq 'ready'; }
 sub is_runable { return $_[0]->{_state} eq 'runable'; }
@@ -552,6 +554,13 @@ process after ANY processes exit, or after ALL exit (the default.)
 ! in front of a process name indicates to run if that process fails with
 bad exit status.  ^ in front of a process indicates to run if that process
 succeeds OR fails.
+
+=item state
+
+Returns the name of the current state, 'idle', 'ready', 'runable',
+'running', 'done' or 'parerr'.  For forward compatibility, use the is_idle
+etc. methods instead of comparing this accessor's value to a constant
+string.
 
 =item status
 

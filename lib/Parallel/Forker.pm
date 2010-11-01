@@ -63,6 +63,12 @@ sub running_sorted {
     return (sort {$a->{name} cmp $b->{name}} values %{$self->{_running}});
 }
 
+sub process {
+    my $self = shift;
+    confess "usage: \$fork->process(\$name)" unless scalar(@_) == 1;
+    return $self->{_processes}{$_[0]};
+}
+
 sub processes {
     my $self = shift;
     return (values %{$self->{_processes}});
@@ -71,6 +77,14 @@ sub processes {
 sub processes_sorted {
     my $self = shift;
     return (sort {$a->{name} cmp $b->{name}} values %{$self->{_processes}});
+}
+
+sub state_stats {
+    my $self = shift;
+    my %stats = (idle=>0, ready=>0, running=>0, runable=>0,
+		  done=>0, parerr=>0, reapable=>0);
+    map {$stats{$_->state}++} $self->processes;
+    return %stats;
 }
 
 #### METHODS
@@ -423,6 +437,11 @@ See if any children need work, and service them.  Start up to max_proc
 processes that are "ready" by calling their run method.  Non-blocking;
 always returns immediately.
 
+=item $self->process (<process_name>)
+
+Return Parallel::Forker::Process object for the specified process name, or
+undef if none is found.  See also find_proc_name.
+
 =item $self->processes
 
 Return Parallel::Forker::Process objects for all processes.
@@ -507,6 +526,11 @@ Must be called in a C<$SIG{CHLD}> handler by the parent process if
 C<use_sig_child> was called with a "true" value.  If there are multiple
 Parallel::Forker objects each of their C<sig_child> methods must be called
 in the C<$SIG{CHLD}> handler.
+
+=item $self->state_stats
+
+Return hash containing statistics with keys of state names, and values with
+number of processes in each state.
 
 =item $self->use_sig_child ( 0 | 1 )
 

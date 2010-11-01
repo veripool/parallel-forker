@@ -10,7 +10,7 @@ use Test::More;
 use strict;
 use Time::HiRes qw (gettimeofday usleep tv_interval sleep time);
 
-BEGIN { plan tests => 99 }
+BEGIN { plan tests => 101 }
 BEGIN { require "t/test_utils.pl"; }
 
 BEGIN { $Parallel::Forker::Debug = 1; }
@@ -346,6 +346,9 @@ sub run_a_test {
   # job4 can't run because his run_after condition fails. be sure
   # to clean him up also
   ok( $reaped{$name4} );
+  ok( ! $fork->process('foo'), "process foo");
   ok( ! $fork->find_proc_name('foo'), "find_proc_name foo");
   ok( ! $fork->find_proc_name('bar'), "find_proc_name bar");
+
+  ok( $fork->state_stats );
 }

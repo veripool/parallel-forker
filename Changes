@@ -2,6 +2,12 @@ Revision history for Perl extension Parallel::Forker
 
 The contributors that suggested a given feature are shown in [].
 
+* Parallel::Forker 1.23***
+
+***	Add ::Forker process method. [by Niels van Dijke]
+
+***	Add ::Process state and state_stats methods. [by Niels van Dijke]
+
 * Parallel::Forker 1.231 2010/07/01
 
 ****	Fix rsh test failure.
