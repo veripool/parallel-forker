@@ -2,7 +2,7 @@ Revision history for Perl extension Parallel::Forker
 
 The contributors that suggested a given feature are shown in [].
 
-* Parallel::Forker 1.23***
+* Parallel::Forker 1.232 2010/11/02
 
 ***	Add ::Forker process method. [by Niels van Dijke]
 
