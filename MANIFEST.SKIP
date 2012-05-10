@@ -13,3 +13,4 @@ test_store$
 ^test_dir/
 /test_dir/
 \.svn/
+^(.*/)?MYMETA\..*$
