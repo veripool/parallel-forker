@@ -2,23 +2,23 @@ Revision history for Perl extension Parallel::Forker
 
 The contributors that suggested a given feature are shown in [].
 
-* Parallel::Forker 1.234 devel
+* Parallel::Forker 1.234 2017-04-26
 
 ****	Fix tests '.' for Perl 5.26.0, rt121025.  [Dan Collins]
 
-* Parallel::Forker 1.232 2010/11/02
+* Parallel::Forker 1.232 2010-11-02
 
 ***	Add ::Forker process method. [by Niels van Dijke]
 
 ***	Add ::Process state and state_stats methods. [by Niels van Dijke]
 
-* Parallel::Forker 1.231 2010/07/01
+* Parallel::Forker 1.231 2010-07-01
 
 ****	Fix rsh test failure.
 
 ****	Use Test::More to simplify test failure debugging.
 
-* Parallel::Forker 1.230 2010/06/16
+* Parallel::Forker 1.230 2010-06-16
 
 **	Add reap_processes and reap to reclaim memory. [by Muir Manders]
 
@@ -26,17 +26,17 @@ The contributors that suggested a given feature are shown in [].
 
 ****	Fix Pod::Usage dependency, rt51024. [Andreas Koenig]
 
-* Parallel::Forker 1.225 2010/01/12
+* Parallel::Forker 1.225 2010-01-12
 
 ****	Documentation updates.
 
-* Parallel::Forker 1.224 2009/05/19
+* Parallel::Forker 1.224 2009-05-19
 
 **	This package is now licensed under LGPL v3 and/or Artistic v2.0.
 
 ****	Fix ignore files to support GIT.
 
-* Parallel::Forker 1.223 2008/11/14
+* Parallel::Forker 1.223 2008-11-14
 
 ***	Add in_parent method and recommend usage, rt40886. [Ton Voon]
 
@@ -76,33 +76,33 @@ The contributors that suggested a given feature are shown in [].
 ****    Extend poll() to allow multiple processes to complete. [Darrell Bishop]
 	This means poll() has no return value; the old return was undocumented.
 
-* Parallel::Forker 1.211 2006/10/03
+* Parallel::Forker 1.211 2006-10-03
 
 ****    Fix kill_tree causing _subprocesses error message
 
-* Parallel::Forker 1.210 2006/05/19
+* Parallel::Forker 1.210 2006-05-19
 
 ***     Internal reorganization of modules and comments.
 
-* Parallel::Forker 1.202 2006/04/05
+* Parallel::Forker 1.202 2006-04-05
 
 ****	Remove Schedule::Load dependency.  [Alan Burlison]
 
-* Parallel::Forker 1.201 2006/03/30
+* Parallel::Forker 1.201 2006-03-30
 
 ***	Add last-run PID number to write_tree output file.  [Jeff Dutton]
 
 ***	Fix poll() setting activity with no runnable processes. [Jeff Dutton]
 
-* Parallel::Forker 1.200 2005/10/19
+* Parallel::Forker 1.200 2005-10-19
 
 **	First public release.
 
-* Parallel::Forker 1.100 2002/10/27
+* Parallel::Forker 1.100 2002-10-27
 
 **	Support running processes when other processes fail.
 
-* Parallel::Forker 1.000 2002/07/26
+* Parallel::Forker 1.000 2002-07-26
 
 **	First created
 
@@ -112,7 +112,7 @@ DESCRIPTION: Documentation on change history for this package
 
 This uses outline mode in Emacs.  See C-h m [M-x describe-mode].
 
-Copyright 2003-2010 by Wilson Snyder.  This program is free software; you
+Copyright 2003-2017 by Wilson Snyder.  This program is free software; you
 can redistribute it and/or modify it under the terms of either the GNU
 Lesser General Public License Version 3 or the Perl Artistic License
 Version 2.0.
