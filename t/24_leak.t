@@ -11,7 +11,7 @@ BEGIN { eval "use Devel::Leak;"; }  # Optional
 BEGIN { eval "use Data::Dumper;"; $Data::Dumper::Indent=1; }  # Optional
 
 BEGIN { plan tests => 2 }
-BEGIN { require "t/test_utils.pl"; }
+BEGIN { require "./t/test_utils.pl"; }
 
 use Parallel::Forker;
 

@@ -11,7 +11,7 @@ use strict;
 use Time::HiRes qw (gettimeofday usleep tv_interval sleep time);
 
 BEGIN { plan tests => 101 }
-BEGIN { require "t/test_utils.pl"; }
+BEGIN { require "./t/test_utils.pl"; }
 
 BEGIN { $Parallel::Forker::Debug = 1; }
 

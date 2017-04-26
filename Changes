@@ -2,6 +2,10 @@ Revision history for Perl extension Parallel::Forker
 
 The contributors that suggested a given feature are shown in [].
 
+* Parallel::Forker 1.234 devel
+
+****	Fix tests '.' for Perl 5.26.0, rt121025.  [Dan Collins]
+
 * Parallel::Forker 1.232 2010/11/02
 
 ***	Add ::Forker process method. [by Niels van Dijke]

@@ -10,7 +10,7 @@ use Test::More;
 use strict;
 
 BEGIN { plan tests => 12 }
-BEGIN { require "t/test_utils.pl"; }
+BEGIN { require "./t/test_utils.pl"; }
 
 BEGIN { $Parallel::Forker::Debug = 1; }
 

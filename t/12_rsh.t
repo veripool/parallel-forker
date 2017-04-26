@@ -12,7 +12,7 @@ use strict;
 our $Other_Host = "localhost";
 
 BEGIN { plan tests => 3 }
-BEGIN { require "t/test_utils.pl"; }
+BEGIN { require "./t/test_utils.pl"; }
 
 BEGIN { $Parallel::Forker::Debug = 1; }
 
