@@ -8,7 +8,7 @@
 
 use Test::More;
 use strict;
-use Time::HiRes qw (gettimeofday usleep tv_interval sleep time);
+use Time::HiRes qw(gettimeofday usleep tv_interval sleep time);
 
 BEGIN { plan tests => 101 }
 BEGIN { require "./t/test_utils.pl"; }
@@ -32,14 +32,14 @@ ok(1, "sig");
 {
     my $Didit;
     my ($start_pid, $finish_pid);
-    $fork->schedule (
-		     run_on_start => sub { $start_pid = $$; },
-		     run_on_finish => sub { $Didit = 1; $finish_pid = $$; },
-		     ) ->run();
+    $fork->schedule(
+		    run_on_start => sub { $start_pid = $$; },
+		    run_on_finish => sub { $Didit = 1; $finish_pid = $$; },
+		    )->run();
     $fork->wait_all();   # Wait for all children to finish
     ok($Didit, "wait_all");
-    ok(!defined $start_pid, "start_pid"); # runs in child
-    is($finish_pid, $$, "finish_pid"); # runs in parent (us)
+    ok(!defined $start_pid, "start_pid");  # runs in child
+    is($finish_pid, $$, "finish_pid");  # runs in parent (us)
 }
 
 sub restarting_sleep {
@@ -67,39 +67,39 @@ sub restarting_sleep {
     sub finish_func { push @done, $_[0]{name} }
 
     $fork->max_proc(3);
-    $fork->schedule (
-		     name => 'p1',
-		     run_on_start => \&quick_sleep,
-		     run_on_finish => \&finish_func,
-		     );
-    $fork->schedule (
-		     name => 'p2',
-		     run_on_start => \&quick_sleep,
-		     run_on_finish => \&finish_func,
-		     );
-    $fork->schedule (
-		     name => 'p3',
-		     run_on_start => \&slow_sleep,
-		     run_on_finish => \&finish_func,
-		     );
-    $fork->schedule (
-		     name => 'p4',
-		     run_on_start => \&quick_sleep,
-		     run_on_finish => \&finish_func,
-		     run_after => ['p1 | p2 | p3'],
-		     );
-    $fork->schedule (
-		     name => 'p5',
-		     run_on_start => \&quick_sleep,
-		     run_on_finish => \&finish_func,
-		     run_after => ['p1 | p2 | p3'],
-		     );
-    $fork->schedule (
-		     name => 'p6',
-		     run_on_start => \&quick_sleep,
-		     run_on_finish => \&finish_func,
-		     run_after => ['p1 | p2 | p3'],
-		     );
+    $fork->schedule(
+		    name => 'p1',
+		    run_on_start => \&quick_sleep,
+		    run_on_finish => \&finish_func,
+		    );
+    $fork->schedule(
+		    name => 'p2',
+		    run_on_start => \&quick_sleep,
+		    run_on_finish => \&finish_func,
+		    );
+    $fork->schedule(
+		    name => 'p3',
+		    run_on_start => \&slow_sleep,
+		    run_on_finish => \&finish_func,
+		    );
+    $fork->schedule(
+		    name => 'p4',
+		    run_on_start => \&quick_sleep,
+		    run_on_finish => \&finish_func,
+		    run_after => ['p1 | p2 | p3'],
+		    );
+    $fork->schedule(
+		    name => 'p5',
+		    run_on_start => \&quick_sleep,
+		    run_on_finish => \&finish_func,
+		    run_after => ['p1 | p2 | p3'],
+		    );
+    $fork->schedule(
+		    name => 'p6',
+		    run_on_start => \&quick_sleep,
+		    run_on_finish => \&finish_func,
+		    run_after => ['p1 | p2 | p3'],
+		    );
 
     # Nothing should have started running yet.
     my $running_count = $fork->running;

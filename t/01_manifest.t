@@ -27,5 +27,5 @@ if (!$ENV{VERILATOR_AUTHOR_SITE}) {
 	warn "%Warning: MANIFEST maybe missing: $file\n";
 	$bad = 1;
     }
-    ok (!$bad);
+    ok(!$bad);
 }

@@ -9,7 +9,7 @@
 use Test::More;
 use strict;
 
-use Time::HiRes qw (gettimeofday usleep tv_interval sleep time);
+use Time::HiRes qw(gettimeofday usleep tv_interval sleep time);
 
 BEGIN { plan tests => 4 }
 BEGIN { require "./t/test_utils.pl"; }
@@ -21,7 +21,7 @@ ok(1, "use");
 
 ######################################################################
 
-my $fork = new Parallel::Forker (use_sig_child=>0);
+my $fork = new Parallel::Forker(use_sig_child=>0);
 ok(1, "new");
 
 # Not required in old versions, so make sure we still work
