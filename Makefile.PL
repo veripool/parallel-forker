@@ -11,9 +11,11 @@ use Carp;
 
 sub MY::postamble {
     q{
-README: readme.texi
+all:: README
+
+README: README.pod
 	-$(RM_RF) $@
-	makeinfo $< --output $@ --no-headers --no-validate
+	pod2text --loose $< > $@
 
 preexist:
 	svnorcvs nexists $(DISTNAME)_$(VERSION_SYM)
@@ -29,7 +31,7 @@ maintainer-dist: preexist dist tag
 	svnorcvs release $(DISTVNAME).tar.gz
 
 maintainer-clean: distclean
-	-$(RM_RF) README vtrace
+	-$(RM_RF) README
 
 maintainer-copy: README
 

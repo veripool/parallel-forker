@@ -2,6 +2,10 @@ Revision history for Perl extension Parallel::Forker
 
 The contributors that suggested a given feature are shown in [].
 
+* Parallel::Forker devel
+
+****	Remove texinfo dependency on building README.
+
 * Parallel::Forker 1.234 2017-04-26
 
 ****	Fix tests '.' for Perl 5.26.0, rt121025.  [Dan Collins]
