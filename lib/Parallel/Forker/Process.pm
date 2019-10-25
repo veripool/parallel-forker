@@ -52,7 +52,7 @@ sub _new {
 	    push @{$self->{_forkref}{_labels}{$self->{label}}}, $self;
 	}
     }
-    $self->_calc_runable();  # Recalculate
+    $self->_calc_runable;  # Recalculate
     return $self;
 }
 
@@ -191,7 +191,7 @@ sub ready {
     # User is indicating ready.
     ($self->{_state} eq 'idle') or croak "%Error: Signalling ready to already ready process,";
 
-    $self->_calc_eqns();
+    $self->_calc_eqns;
 
     # Transition: idle -> 'ready'
     print "  FrkProc $self->{name} $self->{_state} -> ready\n" if $Debug;
@@ -199,7 +199,7 @@ sub ready {
         $_->reference for values %{$self->{_after_parents}};
     }
     $self->{_state} = 'ready';
-    $self->_calc_runable();
+    $self->_calc_runable;
 }
 
 sub parerr {
@@ -213,7 +213,7 @@ sub parerr {
     }
     # May need to spawn/kill children
     foreach my $ra (values %{$self->{_after_children}}) {
-	$ra->_calc_runable();
+	$ra->_calc_runable;
     }
 }
 
@@ -330,7 +330,7 @@ sub poll {
 	$self->{run_on_finish}->($self, $self->{status});
 	# Transition children: ready -> runable
 	foreach my $ra (values %{$self->{_after_children}}) {
-	    $ra->_calc_runable();
+	    $ra->_calc_runable;
 	}
  	$_->unreference for values %{$self->{_after_parents}};
 	# Done
