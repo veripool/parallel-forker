@@ -2,7 +2,7 @@ Revision history for Perl extension Parallel::Forker
 
 The contributors that suggested a given feature are shown in [].
 
-* Parallel::Forker 1.252 devel
+* Parallel::Forker 1.252 2019-10-25
 
 ****    Documentation cleanups for github release.
 
