@@ -8,7 +8,7 @@ license:      perl
 author:
     - Wilson Snyder <wsnyder@wsnyder.org>
 resources:
-    homepage: http://www.veripool.org
+    homepage: https://www.veripool.org/parallel-forker
 requires:
     Proc::ProcessTable:            0.4
     Scalar::Util:		   0

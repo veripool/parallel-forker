@@ -554,7 +554,7 @@ Print a dump of the execution tree.
 =head1 DISTRIBUTION
 
 The latest version is available from CPAN and from
-L<http://www.veripool.org/>.
+L<https://www.veripool.org/parallel-forker>.
 
 Copyright 2002-2019 by Wilson Snyder.  This package is free software; you
 can redistribute it and/or modify it under the terms of either the GNU
