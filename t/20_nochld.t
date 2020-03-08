@@ -32,7 +32,7 @@ ok(1, "sig");
 my $p1 = $fork->schedule(label=>'p1',
 			 run_on_start => sub {
 			     print "p1 starting... $$\n";
-			     for my $i (1..10) { print "p1 ==> $i\n"; usleep(100*1000);}
+			     for my $i (1..10) { print "p1 ==> $i\n"; usleep(20*1000);}
 			     exit(0);
 			 },
 			 run_on_finish => sub {
@@ -43,7 +43,7 @@ my $p1 = $fork->schedule(label=>'p1',
 my $p2 = $fork->schedule(label=>'p2',
 			 run_on_start => sub {
 			     print "p2 starting... $$\n";
-			     for my $i (1..10) { print "p2 ==> $i\n"; usleep(100*1000);}
+			     for my $i (1..10) { print "p2 ==> $i\n"; usleep(20*1000);}
 			     exit(0);
 			 },
 			 run_on_finish => sub {

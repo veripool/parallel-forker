@@ -10,7 +10,8 @@ use Test;
 
 BEGIN { plan tests => 1 }
 
-if (!$ENV{VERILATOR_AUTHOR_SITE}) {
+if (!$ENV{PARALLELFORKER_AUTHOR_SITE}) {
+    warn "(skip author only test)\n";
     skip("author only test (harmless)",1);
 } else {
     eval { use ExtUtils::Manifest; };

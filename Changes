@@ -2,6 +2,10 @@ Revision history for Perl extension Parallel::Forker
 
 The contributors that suggested a given feature are shown in [].
 
+* Parallel::Forker devel
+
+****    Speed up non-author tests.
+
 * Parallel::Forker 1.252 2019-10-25
 
 ****    Documentation cleanups for github release.

@@ -7,6 +7,7 @@
 ######################################################################
 
 use Test::More;
+use Time::HiRes qw(usleep sleep);
 use strict;
 
 BEGIN { plan tests => 4 }
@@ -33,7 +34,7 @@ sub a_test {
     for (my $i=0; $i<8; $i++) {
 	$fork->schedule(
 			run_on_start => sub {
-			    sleep 1;
+			    sleep 0.1;
 			},
 			run_on_finish => sub {
 			    my $running=0;

@@ -23,7 +23,8 @@ foreach my $filename (keys %{$manifest}) {
 	ok(1);
     } elsif ($filename =~ m!NONE_NEEDED!) {
 	skip("File doesn't need check (harmless)");
-    } elsif (!$ENV{VERILATOR_AUTHOR_SITE}) {
+    } elsif (!$ENV{PARALLELFORKER_AUTHOR_SITE}) {
+	warn "(skip as no PARALLELFORKER_AUTHOR_SITE)\n";
 	skip("author only test (harmless)",1);
     } else {
 	warn "%Error: $filename: Bad indentation\n";
