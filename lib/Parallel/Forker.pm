@@ -508,6 +508,12 @@ Parallel::Forker::Process that is finishing, and the exit status of the
 child process.  Note the exit status will only be correct if a CHLD signal
 handler is installed.
 
+=item run_pre_start
+
+Subroutine reference to execute before forking the child, in the master
+process.  The subroutine is called with one argument, a reference to the
+Parallel::Forker::Process that is starting.
+
 =item run_after
 
 A list reference of processes that must be completed before this process
