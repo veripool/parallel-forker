@@ -33,7 +33,7 @@ ok(1, "sig");
 {
     if (!$ENV{PARALLELFORKER_AUTHOR_SITE}) {
 	warn "(skip author only test)\n";
-	skip("author only test (harmless)", 97);
+	skip("author only test (harmless)", 98);
     }
     test_waitall();
     test_poll();
