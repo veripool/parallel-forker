@@ -2,7 +2,7 @@ Revision history for Perl extension Parallel::Forker
 
 The contributors that suggested a given feature are shown in [].
 
-* Parallel::Forker 1.255
+* Parallel::Forker 1.256 2020-05-15
 
 ****    Add run_pre_start option.
 

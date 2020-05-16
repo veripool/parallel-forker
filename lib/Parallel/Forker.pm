@@ -11,7 +11,7 @@ use Parallel::Forker::Process;
 use strict;
 use vars qw($Debug $VERSION);
 
-$VERSION = '1.254';
+$VERSION = '1.256';
 
 ######################################################################
 #### CONSTRUCTOR
